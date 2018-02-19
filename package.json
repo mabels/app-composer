@@ -1,0 +1,43 @@
+{
+  "name": "app-composer",
+  "version": "1.0.0",
+  "description": "app composer interface component",
+  "main": "./dist/src/app-composer.js",
+  "types": "./dist/src/app-composer.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc",
+    "lint": "tslint --project tsconfig.json",
+    "pretest": "npm run build",
+    "test": "mocha dist/test/*-test.js",
+    "prepare": "npm run lint && npm run clean && npm run build && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "mabels/app-composer"
+  },
+  "license": "AFL-2.0",
+  "bugs": {
+    "url": "https://github.com/mabels/app-composer/issues"
+  },
+  "hmmepage": "https://github.com/mabels/app-composer#readme",
+  "devDependencies": {
+    "@types/chai": "^4.1.0",
+    "@types/mocha": "^2.2.46",
+    "chai": ">=3.5.0",
+    "cz-conventional-changelog": "^2.1.0",
+    "mocha": "^4.1.0",
+    "rimraf": "^2.6.2",
+    "tslint": "^5.9.1",
+    "typescript": "^2.6.2",
+    "@types/express": "^4.11.1"
+  },
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
