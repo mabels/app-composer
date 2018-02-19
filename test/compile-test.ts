@@ -4,7 +4,7 @@ import * as assert from 'assert';
 
 describe('AppComposer', () => {
 
-  it('new', () => {
+  it('new AppComposer', () => {
     const ac = new AppComposer('hello');
     assert.equal(ac.baseUrl, 'hello'); 
     assert.ok(ac.express);
