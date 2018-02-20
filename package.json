@@ -1,9 +1,10 @@
 {
   "name": "app-composer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "app composer interface component",
   "main": "./dist/src/app-composer.js",
   "types": "./dist/src/app-composer.d.ts",
+  "files": [ "src", "test", "dist", "tsconfig.json", "tslint.json" ],
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc",
