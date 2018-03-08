@@ -1,0 +1,26 @@
+
+import {
+  PackageJson,
+  startApp,
+  startPkg,
+  startWatchComposer
+} from '../src/index';
+import * as yargs from 'yargs';
+
+const main = yargs.usage('Usage: $0 <command> [options]')
+  .command('watchComposer', 'start the watching Compose Server', {}, (argv) => {
+    const cwd = PackageJson.findPathTo(process.cwd());
+    console.log(`start the watching Compose Server in [${cwd}]`);
+    startWatchComposer(cwd);  // refactoring
+  })
+  .command('server', 'start the Compose Server', {}, (argv) => {
+    const cwd = PackageJson.findPathTo(process.cwd());
+    console.log(`start the Compose Server in [${cwd}]`);
+    startApp(cwd); // refactoring
+  })
+  .command('compose', 'start the composing process', {}, (argv) => {
+    const cwd = PackageJson.findPathTo(process.cwd());
+    console.log(`start the composing process in [${cwd}]`);
+    startPkg(cwd); // refactoring
+  })
+  .argv;

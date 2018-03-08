@@ -1,9 +1,3 @@
-import * as path from 'path';
-import * as fs from 'fs';
-// import * as execa from 'execa';
-
-// tslint:disable-next-line: no-var-requires no-require-imports
-// const nodemon = require('nodemon');
 
 export function startGlobalWatch(baseDir: string = __dirname): void {
   console.log(`global-watch starts in ${baseDir}`);
