@@ -1,80 +1,9 @@
 import * as execa from 'execa';
-import { extractFromCompose } from './composer';
-import * as fs from 'fs';
-import * as path from 'path';
-import { Invocation } from './invocation';
-
-export interface PackageJson {
-  name: string;
-  version: string;
-  main: string;
-  license: string;
-  author: string;
-  scripts: {
-    dev: string;
-  };
-  dependencies: { [id: string]: string };
-}
-
-export interface Names {
-  package: string;
-  invocationJson: string;
-  npmPackage: string;
-  packageJson?: PackageJson;
-  uuid?: string;
-}
-
-function lstEqual(a: string[], b: string[]): boolean {
-  if (a.length !== b.length) {
-    return false;
-  }
-  const as = a.sort();
-  const bs = b.sort();
-  for (let i = 0; i < as.length; ++i) {
-    if (as[i] !== bs[i]) {
-      return false;
-    }
-  }
-  return true;
-}
-
-export function writePackageJson(pkgName: string, directory: string, pkgs: Names[]): string {
-  const packagesJson: PackageJson = {
-    name: pkgName,
-    version: '99.98.97',
-    main: './lib/index.js',
-    license: 'UNLICENSED',
-    author: 'composer',
-    scripts: {
-      dev: 'node -e "require(\'@myaudi/common/lib/invoke/composer\').start(process.cwd())"'
-    },
-    dependencies: {}
-  };
-  pkgs.forEach((names) => {
-    packagesJson.dependencies[names.packageJson.name] = `${names.packageJson.version}`;
-  });
-  const packageJsonFname = path.join(directory, 'package.json');
-  fs.writeFileSync(packageJsonFname, JSON.stringify(packagesJson, null, 2));
-  return packageJsonFname;
-}
-
-function writeComposedJs(pkgName: string, directory: string, composePath: string, names: Names[]): string {
-  const composedJs = path.join(directory, 'index.js');
-  const invocation = new Invocation(pkgName);
-  names.map((n) => {
-    invocation.merge(Invocation.fill(JSON.parse(fs.readFileSync(n.invocationJson).toString())));
-  });
-  fs.writeFileSync(composedJs, invocation.build(invocation.jsGlobalRequires));
-  return composedJs;
-}
-
-export enum WatcherState {
-  COULDSTARTED = 'CouldStarted',
-  RESTART = 'Restart'
-  // YARNING,
-  // SERVING,
-  // IDLE
-}
+import { WatcherState } from './watcher-state';
+import { extractFromCompose } from '../functions/extract-from-compose';
+import { PackageJson } from '../types/package-json';
+import { writeComposedJs } from '../functions/write-composed-js';
+import { lstEqual } from '../functions/lst-equal';
 
 export class Watcher {
   public prevPkgs: string[] = [];
@@ -138,7 +67,7 @@ export class Watcher {
     this.watcherState = WatcherState.RESTART;
     extractFromCompose(this.baseDir, this.watchDir, this.prevPkgs).then((pkgs) => {
       // packageJson
-      writePackageJson(this.pkgName, this.baseDir, pkgs);
+      PackageJson.writeDummy(this.pkgName, this.baseDir, pkgs);
       const composeJsFname = writeComposedJs(this.pkgName, this.baseDir, this.watchDir, pkgs);
       console.log(`ComposedFname:${composeJsFname}`);
       // composeJs

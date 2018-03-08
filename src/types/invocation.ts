@@ -1,4 +1,4 @@
-import EntryPoint from './entry-point';
+import { EntryPoint } from './entry-point';
 import { Invokeable } from './invokeable';
 
 export class Invocation {
@@ -76,5 +76,3 @@ export class Invocation {
   }
 
 }
-
-export default Invocation;

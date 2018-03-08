@@ -1,4 +1,4 @@
-import AppComposer from '../src/app-composer';
+import { AppComposer } from '../src/index';
 import * as assert from 'assert';
 
 describe('AppComposer', () => {

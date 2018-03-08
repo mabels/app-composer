@@ -1,25 +1,13 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import * as execa from 'execa';
+// import * as execa from 'execa';
 
 // tslint:disable-next-line: no-var-requires no-require-imports
-const nodemon = require('nodemon');
+// const nodemon = require('nodemon');
 
-function findPathOfPackageJson(str: string): string {
-  if (str.length === 0) { return null; }
-  let base = path.dirname(str);
-  if (base === str) { base = ''; }
-  const pjson = path.join(base, 'package.json');
-  // console.log(`findPathOfPackageJson:${str} => ${pjson}`);
-  const ret = fs.existsSync(pjson);
-  if (!ret) {
-    return findPathOfPackageJson(base);
-  }
-  return base;
-}
-
-export function start(baseDir: string = __dirname): void {
+export function startGlobalWatch(baseDir: string = __dirname): void {
   console.log(`global-watch starts in ${baseDir}`);
+  /*
   nodemon({
     exec: 'echo',
     watch: [baseDir],
@@ -55,6 +43,7 @@ export function start(baseDir: string = __dirname): void {
       }
     });
   });
+  */
 }
 
 // const depTree = {};

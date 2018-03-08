@@ -10,4 +10,4 @@ export class AppComposer {
   }
 }
 
-export default AppComposer;
+// export default AppComposer;

@@ -33,5 +33,3 @@ export class EntryPoint {
     return snakeToCamel(path.basename(this.packageJson.name));
   }
 }
-
-export default EntryPoint;
