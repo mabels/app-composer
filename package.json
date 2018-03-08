@@ -1,10 +1,10 @@
 {
   "name": "app-composer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "app composer interface component",
   "main": "./dist/src/app-composer.js",
   "bin": {
-    "composer": "./bin/composer"
+    "composer": "./bin/app-composer"
   },
   "types": "./dist/src/app-composer.d.ts",
   "files": [
