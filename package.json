@@ -1,10 +1,19 @@
 {
   "name": "app-composer",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "app composer interface component",
   "main": "./dist/src/app-composer.js",
+  "bin": {
+    "composer": "./bin/composer"
+  },
   "types": "./dist/src/app-composer.d.ts",
-  "files": [ "src", "test", "dist", "tsconfig.json", "tslint.json" ],
+  "files": [
+    "src",
+    "test",
+    "dist",
+    "tsconfig.json",
+    "tslint.json"
+  ],
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc",
@@ -21,20 +30,32 @@
   "bugs": {
     "url": "https://github.com/mabels/app-composer/issues"
   },
-  "hmmepage": "https://github.com/mabels/app-composer#readme",
+  "homepage": "https://github.com/mabels/app-composer#readme",
   "devDependencies": {
+    "@types/globby": "^6.1.0",
     "@types/chai": "^4.1.0",
+    "@types/express": "^4.11.1",
     "@types/mocha": "^2.2.46",
+    "@types/chokidar": "^1.7.5",
+    "@types/execa": "^0.8.1",
+    "@types/mkdirp": "^0.5.2",
+    "@types/rimraf": "^2.0.2",
+    "@types/uuid": "^3.4.3",
     "chai": ">=3.5.0",
     "cz-conventional-changelog": "^2.1.0",
     "mocha": "^4.1.0",
-    "rimraf": "^2.6.2",
     "tslint": "^5.9.1",
-    "typescript": "^2.6.2",
-    "@types/express": "^4.11.1"
+    "typescript": "^2.6.2"
   },
   "dependencies": {
-    "express": "^4.16.2"
+    "chokidar": "^2.0.2",
+    "execa": "^0.9.0",
+    "express": "^4.16.2",
+    "globby": "^8.0.1",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.2",
+    "uuid": "^3.2.1",
+    "yargs": "^11.0.0"
   },
   "config": {
     "commitizen": {

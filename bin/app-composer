@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+const appComposer = require("../dist/src/index");
+const composer = require("../dist/src/composer");
+const yargs = require("yargs");
+const cwd = process.cwd();
+console.log(`Running Composer in [${cwd}]`);
+
+const argv = require('yargs')
+      .usage('Usage: $0 <command> [options]')
+      .command('start', 'start the composed server', {}, (argv) => {
+        composer.start(cwd);
+      })
+      .command('compose', 'start the composing process', {}, (argv) => {
+        appComposer.pkg(cwd);
+      })
+      .argv;
