@@ -1,18 +1,14 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import * as execa from 'execa';
-// import * as invoke from './index';
 import * as uuid from 'uuid';
 import * as mkdirp from 'mkdirp';
 import * as rimraf from 'rimraf';
 import * as chokidar from 'chokidar';
 import { Watcher, Names } from './watcher';
-// import { watch } from 'fs';
 
 // tslint:disable-next-line: no-var-requires no-require-imports
 const globby = require('globby');
-// tslint:disable-next-line: no-var-requires no-require-imports
-
 
 function extractor(composePath: string, names: Names[]): Promise<Names[]> {
   const extractedPath = path.join(composePath, '..', 'node_modules');
@@ -58,7 +54,7 @@ function extractor(composePath: string, names: Names[]): Promise<Names[]> {
   }));
   return Promise.all<Names>(promiseNames);
   // const tarFname = pkgs[0];
-  // execa('tar', ['xzf', tarFname, 
+  // execa('tar', ['xzf', tarFname,
   // const urls = pkgs
   //   .map((fname) => fname.substr(baseDir.length + '/'.length))
   //   .map((fname) => `file:./${fname}`);
@@ -70,7 +66,7 @@ function extractor(composePath: string, names: Names[]): Promise<Names[]> {
   // // Promise.all(pkgs.map((tarFname) => tar.x({
   // //     file: tarFname
   // //   })
-  // // })).then(); 
+  // // })).then();
 }
 
 class Suffixes {
@@ -132,10 +128,9 @@ export function extractFromCompose(basePath: string, composePath: string, prevPk
   });
 }
 
-
-export function start(baseDir: string = __dirname) {
+export function start(baseDir: string = __dirname): void {
   const watchDir = path.join(baseDir, 'compose');
-  const watcher = new Watcher(path.basename(baseDir), baseDir, watchDir); 
+  const watcher = new Watcher(path.basename(baseDir), baseDir, watchDir);
   console.log(`composer starts in ${baseDir} watches: ${watchDir}`);
   const choki = chokidar.watch(watchDir, {
     ignoreInitial: true
@@ -143,5 +138,3 @@ export function start(baseDir: string = __dirname) {
   choki.on('all', () => watcher.dog('watch'));
   choki.on('ready', () => watcher.dog('ready'));
 }
-
-

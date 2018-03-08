@@ -26,10 +26,10 @@ export class EntryPoint {
     this.entryPoint = ep['entry-point'];
     this.appName = ep['app-name'];
   }
-  public jsEntryPoint() {
+  public jsEntryPoint(): string {
     return snakeToCamel(path.basename(this.entryPoint));
   }
-  public jsAppName() {
+  public jsAppName(): string {
     return snakeToCamel(path.basename(this.packageJson.name));
   }
 }

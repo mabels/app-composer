@@ -9,9 +9,8 @@ import * as execa from 'execa';
 // tslint:disable-next-line: no-var-requires no-require-imports
 // const globby = require('globby');
 
-
 // tslint:disable-next-line: no-any
-function transformToCompose(pjs: any, appComposer: any) {
+function transformToCompose(pjs: any, appComposer: any): Map<string, EntryPoint[]> {
   const perCompose = new Map<string, EntryPoint[]>();
   Object.keys(appComposer).forEach((epName) => {
     console.log(`entryPoint=${epName}`);
@@ -29,8 +28,14 @@ function transformToCompose(pjs: any, appComposer: any) {
   return perCompose;
 }
 
+interface InvokePackage {
+  name: string;
+  invocation: Invocation;
+  localJs: string;
+  globalJs: string;
+}
 
-function invokePackage(basePath: string, packageName: string, entryPoints: EntryPoint[]) {
+function invokePackage(basePath: string, packageName: string, entryPoints: EntryPoint[]): InvokePackage {
   console.log(`invoke ${packageName} for ${JSON.stringify(entryPoints.map((ep) => ep.appName))}`);
   const invocation = new Invocation(packageName);
   entryPoints.forEach((ep) => invocation.add(ep));
@@ -40,7 +45,7 @@ function invokePackage(basePath: string, packageName: string, entryPoints: Entry
   return { name: invokeJsFname, invocation, localJs, globalJs };
 }
 
-export function readPackageJson(basePath: string) {
+export function readPackageJson(basePath: string): any  {
   const packageJsonFname = path.join(basePath, 'package.json');
   const packageJson = JSON.parse(fs.readFileSync(packageJsonFname).toString());
   if (!packageJson['app-composer']) {
@@ -49,7 +54,7 @@ export function readPackageJson(basePath: string) {
   }
   return packageJson;
 }
-export function app(basePath: string = './') {
+export function app(basePath: string = './'): void {
   const packageJson = readPackageJson(basePath);
   if (!packageJson) {
     return;
@@ -65,7 +70,7 @@ export function app(basePath: string = './') {
   });
 }
 
-export function pkg(basePath: string = './') {
+export function pkg(basePath: string = './'): void {
   const packageJson = readPackageJson(basePath);
   if (!packageJson) {
     return;
@@ -97,4 +102,3 @@ export function pkg(basePath: string = './') {
     });
   });
 }
-

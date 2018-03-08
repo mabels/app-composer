@@ -18,7 +18,7 @@ function findPathOfPackageJson(str: string): string {
   return base;
 }
 
-export function start(baseDir: string = __dirname) {
+export function start(baseDir: string = __dirname): void {
   console.log(`global-watch starts in ${baseDir}`);
   nodemon({
     exec: 'echo',
@@ -37,7 +37,7 @@ export function start(baseDir: string = __dirname) {
       .filter((fname) => !fname.includes('/lib/'))
       .map((fname) => findPathOfPackageJson(fname))
       .filter((fname) => !!fname)
-      .filter((fname) => fname !== baseDir)
+      .filter((fname) => fname !== baseDir);
     const toBuild = [...new Set(fnames)];
     const pnames = toBuild.map((dir) => ({
       name: JSON.parse(fs.readFileSync(path.join(dir, 'package.json')).toString()).name,
@@ -57,8 +57,6 @@ export function start(baseDir: string = __dirname) {
   });
 }
 
-
-
 // const depTree = {};
 
 // // tslint:disable-next-line: no-any
@@ -70,7 +68,7 @@ export function start(baseDir: string = __dirname) {
 //   return (node.children || []).find((cnode: any) => finder(cnode, pkgnames));
 // }
 
-// const pwds = execa.sync('npx', ['lerna', 'exec', '--', 'sh', '-c', 
+// const pwds = execa.sync('npx', ['lerna', 'exec', '--', 'sh', '-c',
 //       'pwd; [ -f lib/deps.json ] || (mkdir -p lib; yarn list --json > lib/deps.json)']).stdout;
 // pwds.split(/[\n\r]+/)
 // .map((fname) => fname.substr(__dirname.length + '/'.length))
@@ -83,16 +81,16 @@ export function start(baseDir: string = __dirname) {
 //   }
 // });
 
-//const moddef = JSON.parse(execa.sync('npx', ['lerna', 'ls', '--json']).stdout);
-//moddef.forEach(mod => { 
-  //const key = execa.sync('npx', ['lerna', `--scope=${mod.name}`, 'exec', 'pwd']).stdout;
+// const moddef = JSON.parse(execa.sync('npx', ['lerna', 'ls', '--json']).stdout);
+// moddef.forEach(mod => {
+// const key = execa.sync('npx', ['lerna', `--scope=${mod.name}`, 'exec', 'pwd']).stdout;
 // console.log(`loading dependency for ${mod.name}`);
-// const paths = execa.sync('npx', 
-//   ['lerna', `--scope=${mod.name}`, 
- //  ]).stdout;
+// const paths = execa.sync('npx',
+//   ['lerna', `--scope=${mod.name}`,
+//  ]).stdout;
 // console.log(paths);
-  // depTree[mode.name] = JSON.parse(
-//);
+// depTree[mode.name] = JSON.parse(
+// );
 
 // force a restart
 // nodemon.emit('restart');

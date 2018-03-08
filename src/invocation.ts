@@ -1,18 +1,23 @@
 import EntryPoint from './entry-point';
 import { Invokeable } from './invokeable';
 
-
 export class Invocation {
   public readonly packageName: string;
   public readonly jsEntryPoints: string[];
   public readonly jsLocalRequires: string[];
   public readonly jsGlobalRequires: string[];
 
-
   // tslint:disable-next-line: no-any
-  public static fill(obj: any) {
+  public static fill(obj: any): Invocation {
     return new Invocation(obj.packageName, obj.jsEntryPoints,
       obj.jsLocalRequires, obj.jsGlobalRequires);
+  }
+
+  // tslint:disable-next-line: no-any
+  private static resolverTemplate(jse: any, appSrv: any, merge: (x: any) => void): void {
+    const obj: Invokeable = jse.factory();
+    appSrv.addController(obj.apiController);
+    merge(obj.serverConfig || {});
   }
 
   public constructor(packageName: string,
@@ -29,7 +34,7 @@ export class Invocation {
     this.jsGlobalRequires.push.apply(this.jsGlobalRequires, other.jsGlobalRequires);
   }
 
-  private createApiServer() {
+  private createApiServer(): string[] {
     return [
       `const { AppServer } = require('@myaudi/common/lib/app-server');`,
       'const appServer = new AppServer();',
@@ -40,34 +45,28 @@ export class Invocation {
     ];
   }
 
-  // tslint:disable-next-line: no-any
-  private static resolverTemplate(jse: any, appSrv: any, merge: (x: any) => void): void {
-    const obj: Invokeable = jse.factory();
-    appSrv.addController(obj.apiController);
-    merge(obj.serverConfig || {});
-  }
-
-  public add(entryPoint: EntryPoint) {
+  public add(entryPoint: EntryPoint): void {
     // console.log(`XXX:${JSON.stringify(entryPoint, null, 2)}`);
     if (entryPoint.entryPointFile) {
       const jsEntryPoint = `entryPoint${entryPoint.jsAppName()}`;
       this.jsLocalRequires.push(`const ${jsEntryPoint} = require('${entryPoint.entryPointFile}');`);
-      this.jsGlobalRequires.push(`const ${jsEntryPoint} = require('${entryPoint.packageJson.name}/${entryPoint.entryPointFile}');`);
+      this.jsGlobalRequires.push(
+        `const ${jsEntryPoint} = require('${entryPoint.packageJson.name}/${entryPoint.entryPointFile}');`);
       this.jsEntryPoints.push(`resolverTemplate(${jsEntryPoint}, appServer, appServerMerge)`);
     }
   }
 
-  private startApiServer() {
+  private startApiServer(): string[] {
     return [`appServer.start(appServerConfig);`];
   }
 
   private preamble(): string[] {
     return [
       '// hello world'
-    ]
+    ];
   }
 
-  public build(reqs: string[]) {
+  public build(reqs: string[]): string {
     const js = this.preamble()
       .concat(reqs)
       .concat(this.createApiServer())

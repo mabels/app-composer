@@ -1,5 +1,5 @@
 import * as execa from 'execa';
-import { extractFromCompose } from './composer'
+import { extractFromCompose } from './composer';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Invocation } from './invocation';
@@ -12,7 +12,7 @@ export interface PackageJson {
   author: string;
   scripts: {
     dev: string;
-  },
+  };
   dependencies: { [id: string]: string };
 }
 
@@ -23,7 +23,6 @@ export interface Names {
   packageJson?: PackageJson;
   uuid?: string;
 }
-
 
 function lstEqual(a: string[], b: string[]): boolean {
   if (a.length !== b.length) {
@@ -69,14 +68,11 @@ function writeComposedJs(pkgName: string, directory: string, composePath: string
   return composedJs;
 }
 
-
-
-
 export enum WatcherState {
   COULDSTARTED = 'CouldStarted',
   RESTART = 'Restart'
   // YARNING,
-  // SERVING,  
+  // SERVING,
   // IDLE
 }
 
@@ -127,7 +123,7 @@ export class Watcher {
 
   public restartDog(src: string): void {
     if (this.watcherState === WatcherState.RESTART) {
-      this.dog(src); 
+      this.dog(src);
       return;
     }
     this.watcherState = WatcherState.COULDSTARTED;
@@ -166,9 +162,9 @@ export class Watcher {
         this.watcherState = WatcherState.COULDSTARTED;
         this.restartDog(this.watcherSrc);
       }
-    }).catch((e) =>{
+    }).catch((e) => {
       console.error(e);
-    })
+    });
   }
 
 }

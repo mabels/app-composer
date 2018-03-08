@@ -7,4 +7,3 @@ export interface ServerConfig {
   authUser?: string;
   authPassword?: string;
 }
-
