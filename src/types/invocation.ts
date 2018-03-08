@@ -1,16 +1,18 @@
 import { EntryPoint } from './entry-point';
 import { Invokeable } from './invokeable';
+import { InvocationParams } from './invocation-params';
 
 export class Invocation {
   public readonly packageName: string;
   public readonly jsEntryPoints: string[];
   public readonly jsLocalRequires: string[];
   public readonly jsGlobalRequires: string[];
+  public readonly invocationParams: InvocationParams[];
 
   // tslint:disable-next-line: no-any
   public static fill(obj: any): Invocation {
     return new Invocation(obj.packageName, obj.jsEntryPoints,
-      obj.jsLocalRequires, obj.jsGlobalRequires);
+      obj.jsLocalRequires, obj.jsGlobalRequires, InvocationParams.fill(obj["app-composer"]));
   }
 
   // tslint:disable-next-line: no-any
@@ -21,11 +23,12 @@ export class Invocation {
   }
 
   public constructor(packageName: string,
-    jeps: string[] = [], jlrs: string[] = [], jgrs: string[] = []) {
+    jeps: string[] = [], jlrs: string[] = [], jgrs: string[] = [], obj: ) {
     this.packageName = packageName;
     this.jsEntryPoints = jeps;
     this.jsLocalRequires = jlrs;
     this.jsGlobalRequires = jgrs;
+    this.invocationParams = invocationParams;
   }
 
   public merge(other: Invocation): void {

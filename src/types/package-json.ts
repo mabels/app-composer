@@ -1,10 +1,8 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { Names } from './names';
+import { PackageJsonAppComposer } from './package-json-app-composer';
 
-export interface PackageJsonAppComposer {
-
-}
 export interface PackageJsonSchema {
   name: string;
   version: string;
@@ -16,7 +14,7 @@ export interface PackageJsonSchema {
   };
   dependencies?: { [id: string]: string };
   devDependencies?: { [id: string]: string };
-  'app-composer'?: { [id: string]: PackageJsonAppComposer };
+  'app-composer'?: PackageJsonAppComposerParams;
 }
 
 export class PackageJson {
