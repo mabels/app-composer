@@ -20,3 +20,5 @@ export { startPkg } from './functions/start-pkg';
 export { startWatchComposer } from './functions/start-watch-composer';
 export { transformToCompose } from './functions/transform-to-compose';
 export { writeComposedJs } from './functions/write-composed-js';
+
+export default AppComposer;
