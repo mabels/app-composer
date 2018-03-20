@@ -6,7 +6,7 @@ import { invokePackage } from './invoke-package';
 
 export function startApp(basePath: string = './'): void {
   const packageJson = PackageJson.read(basePath);
-  if (!packageJson) {
+  if (!PackageJson.isComposable(packageJson)) {
     return;
   }
   const appComposer = packageJson['app-composer'];

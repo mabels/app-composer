@@ -8,7 +8,7 @@ import { transformToCompose } from './transform-to-compose';
 
 export function startPkg(basePath: string = './'): void {
   const packageJson = PackageJson.read(basePath);
-  if (!packageJson) {
+  if (!PackageJson.isComposable(packageJson)) {
     return;
   }
   const appComposer = packageJson['app-composer'];

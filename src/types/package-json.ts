@@ -23,10 +23,6 @@ export class PackageJson {
   public static read(basePath: string): PackageJsonSchema {
     const packageJsonFname = path.join(basePath, 'package.json');
     const packageJson = JSON.parse(fs.readFileSync(packageJsonFname).toString());
-    if (!packageJson['app-composer']) {
-      console.log(`nothing todo app-composer section in ${packageJsonFname}`);
-      return;
-    }
     return packageJson;
   }
 
@@ -77,6 +73,10 @@ export class PackageJson {
       }
     }
     return base;
+  }
+
+  public static isComposable(schema: PackageJsonSchema): boolean {
+    return 'app-composer' in schema == true;
   }
 
 }
