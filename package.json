@@ -6,7 +6,7 @@
   "bin": {
     "app-composer": "./bin/app-composer"
   },
-  "types": "./dist/src/app-composer.d.ts",
+  "types": "./dist/src/index.d.ts",
   "files": [
     "bin",
     "src",
