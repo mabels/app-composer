@@ -19,7 +19,21 @@ export interface PackageJsonSchema {
   'app-composer'?: { [id: string]: PackageJsonAppComposer };
 }
 
-export class PackageJson {
+export class PackageJson implements PackageJsonSchema {
+  public readonly name: string;
+  public readonly version: string;
+  public readonly main: string;
+  public readonly license: string;
+  public readonly author: string;
+
+  public readonly scripts: {
+    dev: string;
+  };
+
+  public readonly dependencies?: { [id: string]: string };
+  public readonly devDependencies?: { [id: string]: string };
+  public readonly 'app-composer'?: { [id: string]: PackageJsonAppComposer };
+
   public static read(basePath: string): PackageJsonSchema {
     const packageJsonFname = path.join(basePath, 'package.json');
     const packageJson = JSON.parse(fs.readFileSync(packageJsonFname).toString());
@@ -79,4 +93,15 @@ export class PackageJson {
     return 'app-composer' in schema == true;
   }
 
+  public constructor(schema: PackageJsonSchema) {
+    this.name = schema.name;
+    this.version = schema.version;
+    this.main = schema.main;
+    this.license = schema.license;
+    this.author = schema.author;
+    this.scripts = schema.scripts;
+    this.dependencies = schema.dependencies;
+    this.devDependencies = schema.devDependencies;
+    this['app-composer'] = schema['app-composer'];
+  }
 }
