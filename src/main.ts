@@ -2,7 +2,7 @@
 import {
   PackageJson,
   startApp,
-  startPkg,
+  createPkg,
   startWatchComposer
 } from '../src/index';
 import * as yargs from 'yargs';
@@ -22,6 +22,6 @@ yargs.usage('Usage: $0 <command> [options]')
   .command('compose', 'start the composing process', {}, (argv) => {
     const cwd = PackageJson.findPathTo(process.cwd());
     console.log(`start the composing process in [${cwd}]`);
-    startPkg(cwd); // refactoring
+    createPkg(cwd); // refactoring
   })
   .argv;

@@ -4,10 +4,12 @@ import * as mkdirp from 'mkdirp';
 import * as execa from 'execa';
 import * as rimraf from 'rimraf';
 import { Names } from '../types/names';
+import * as uuid from 'uuid';
 
-export function extractor(composePath: string, names: Names[]): Promise<Names[]> {
-  const extractedPath = path.join(composePath, '..', 'node_modules');
+export function extractor(extractedPath: string, names: Names[]): Promise<Names[]> {
+  console.log('extracting packages...');
   const promiseNames = names.map((u) => new Promise<Names>((rs, rj) => {
+    u.uuid = u.uuid || uuid.v4();
     const tmpDir = path.join(extractedPath, '.temp', u.uuid);
     // console.log(`mkdirp: ${tmpDir}`);
     mkdirp(tmpDir, (err) => {
@@ -18,6 +20,12 @@ export function extractor(composePath: string, names: Names[]): Promise<Names[]>
       execa('sh', ['-c', `cd ${tmpDir} && tar xzf ${u.npmPackage}`]).then(() => {
         const packageDir = path.join(tmpDir, 'package');
         u.packageJson = JSON.parse(fs.readFileSync(path.join(packageDir, 'package.json')).toString());
+        const ijp = `${path.join(path.dirname(u.npmPackage), path.basename(u.npmPackage, '.npm.tgz'))}.Invocation.json`;
+        try {
+          u.invocationJson = JSON.parse(fs.readFileSync(ijp).toString());
+        } catch (e) {
+          // nothing todo
+        }
         const pname = u.packageJson.name;
         const pkgDir = path.join(extractedPath, pname);
         // console.log(`remove to ${pkgDir}`);

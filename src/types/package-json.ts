@@ -12,7 +12,7 @@ export interface PackageJsonSchema {
   license: string;
   author: string;
   scripts: {
-    dev: string;
+    [id: string]: string
   };
   dependencies?: { [id: string]: string };
   devDependencies?: { [id: string]: string };
@@ -26,17 +26,15 @@ export class PackageJson implements PackageJsonSchema {
   public readonly license: string;
   public readonly author: string;
 
-  public readonly scripts: {
-    dev: string;
-  };
+  public readonly scripts: {};
 
   public readonly dependencies?: { [id: string]: string };
   public readonly devDependencies?: { [id: string]: string };
   public readonly 'app-composer'?: { [id: string]: PackageJsonAppComposer };
 
-  public static read(basePath: string): PackageJsonSchema {
+  public static read(basePath: string): PackageJson {
     const packageJsonFname = path.join(basePath, 'package.json');
-    const packageJson = JSON.parse(fs.readFileSync(packageJsonFname).toString());
+    const packageJson = new PackageJson(JSON.parse(fs.readFileSync(packageJsonFname).toString()));
     return packageJson;
   }
 
@@ -48,7 +46,8 @@ export class PackageJson implements PackageJsonSchema {
       license: 'UNLICENSED',
       author: 'composer',
       scripts: {
-        dev: ''
+        dev: 'exec node index.js',
+        bootstrap: "node -e 'require(\"app-composer\").createBuildPack(process.cwd());'"
       },
       devDependencies: {
         'app-composer': '*'
@@ -103,5 +102,50 @@ export class PackageJson implements PackageJsonSchema {
     this.dependencies = schema.dependencies;
     this.devDependencies = schema.devDependencies;
     this['app-composer'] = schema['app-composer'];
+  }
+
+  public write(destination: string): void {
+    try {
+      fs.writeFileSync(destination, JSON.stringify(this, null, 2), 'utf8');
+    } catch (e) {
+      console.log(`unable to write package json to ${destination}`, e);
+      throw e;
+    }
+  }
+
+  public mergeDependencies(pkgJson: PackageJson): PackageJson {
+    return new PackageJson({
+      name: this.name,
+      version: this.version,
+      main: this.main,
+      license: this.license,
+      author: this.author,
+      scripts: this.scripts,
+      devDependencies: { ...this.devDependencies, ...pkgJson.devDependencies },
+      dependencies: { ...this.dependencies, ...pkgJson.dependencies }
+    });
+  }
+
+  public removeDependencies(packageNames: string[]): PackageJson {
+    const dependencies: { [id: string]: string } = {};
+    const devDependencies: { [id: string]: string } = {};
+
+    Object.keys(this.dependencies).forEach((depName) => {
+      if (packageNames.indexOf(depName) < 0) {
+        dependencies[depName] = this.dependencies[depName];
+        devDependencies[depName] = this.devDependencies[depName];
+      }
+    });
+
+    return new PackageJson({
+      name: this.name,
+      version: this.version,
+      main: this.main,
+      license: this.license,
+      author: this.author,
+      scripts: this.scripts,
+      devDependencies: devDependencies,
+      dependencies: dependencies
+    });
   }
 }

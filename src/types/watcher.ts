@@ -68,7 +68,7 @@ export class Watcher {
     extractFromCompose(this.baseDir, this.watchDir, this.prevPkgs).then((pkgs) => {
       // packageJson
       PackageJson.writeDummy(this.pkgName, this.baseDir, pkgs);
-      const composeJsFname = writeComposedJs(this.pkgName, this.baseDir, this.watchDir, pkgs);
+      const composeJsFname = writeComposedJs(this.pkgName, this.baseDir, pkgs);
       console.log(`ComposedFname:${composeJsFname}`);
       // composeJs
       const pkgsNames = pkgs.map((p) => p.package);
