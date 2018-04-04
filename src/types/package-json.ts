@@ -89,7 +89,7 @@ export class PackageJson implements PackageJsonSchema {
   }
 
   public static isComposable(schema: PackageJsonSchema): boolean {
-    return 'app-composer' in schema == true;
+    return typeof schema !== 'undefined' && !!schema['app-composer'];
   }
 
   public constructor(schema: PackageJsonSchema) {
