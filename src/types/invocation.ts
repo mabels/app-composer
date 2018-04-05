@@ -16,7 +16,7 @@ export class Invocation {
       obj.jsLocalRequires, obj.jsGlobalRequires);
   }
 
-  // tslint:disable-next-line: no-any
+  // tslint:disable-next-line
   private static resolverTemplate(jse: any, appSrv: any, merge: (x: any) => void): void {
     const obj: Invokeable = jse.factory();
     appSrv.addController(obj.apiController);
