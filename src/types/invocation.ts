@@ -1,11 +1,14 @@
 import { EntryPoint } from './entry-point';
 import { Invokeable } from './invokeable';
+import { InvokationArgs } from './invokation-args';
+import { loadConfig } from '../functions/config-loader';
 
 export class Invocation {
   public readonly packageName: string;
   public readonly jsEntryPoints: string[];
   public readonly jsLocalRequires: string[];
   public readonly jsGlobalRequires: string[];
+  private invokationArgs: InvokationArgs;
 
   // tslint:disable-next-line: no-any
   public static fill(obj: any): Invocation {
@@ -34,15 +37,24 @@ export class Invocation {
     this.jsGlobalRequires.push.apply(this.jsGlobalRequires, other.jsGlobalRequires);
   }
 
-  private createApiServer(): string[] {
-    return [
-      `const { AppServer } = require('@myaudi/common/lib/app-server');`,
-      'const appServer = new AppServer();',
-      'const appServerConfig = {};',
-      'function appServerMerge(cfg) { Object.assign(appServerConfig, cfg || {}); };',
-      // tslint:disable-next-line: no-any
-      `function ${Invocation.resolverTemplate as any}`
-    ];
+  private getInvokationArgs(): InvokationArgs {
+    if (!this.invokationArgs) {
+      try {
+        this.invokationArgs = loadConfig(process.cwd()).invokationArgs;
+      } catch (e) {
+        console.warn('could not load invokation args. Using stub args.');
+        this.invokationArgs = {
+          preamble: () => ['// preamble'],
+          createServer: () => ['// create server'],
+          startServer: () => ['// start server']
+        };
+      }
+    }
+    return this.invokationArgs;
+  }
+
+  private createServer(): string[] {
+    return this.getInvokationArgs().createServer();
   }
 
   public add(entryPoint: EntryPoint): void {
@@ -56,22 +68,20 @@ export class Invocation {
     }
   }
 
-  private startApiServer(): string[] {
-    return [`appServer.start(appServerConfig);`];
+  private startServer(): string[] {
+    return this.getInvokationArgs().startServer();
   }
 
   private preamble(): string[] {
-    return [
-      '// hello world'
-    ];
+    return this.getInvokationArgs().preamble();
   }
 
   public build(reqs: string[]): string {
     const js = this.preamble()
       .concat(reqs)
-      .concat(this.createApiServer())
+      .concat(this.createServer())
       .concat(this.jsEntryPoints)
-      .concat(this.startApiServer());
+      .concat(this.startServer());
     return js.join('\n');
   }
 

@@ -1,6 +1,7 @@
 export { AppComposer } from './types/app-composer';
 export { EntryPoint } from './types/entry-point';
 export { Invocation } from './types/invocation';
+export { InvokationArgs } from './types/invokation-args';
 export { Invokeable } from './types/invokeable';
 export { InvokePackage } from './types/invoke-package';
 export { Names } from './types/names';
