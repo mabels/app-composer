@@ -1,6 +1,6 @@
 {
   "name": "app-composer",
-  "version": "1.2.0-f",
+  "version": "1.2.0-g",
   "description": "app composer interface component",
   "main": "./dist/src/index.js",
   "bin": {
