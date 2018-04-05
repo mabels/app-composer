@@ -17,7 +17,7 @@ export class Invocation {
   }
 
   // tslint:disable-next-line
-  private static resolverTemplate(jse: any, appSrv: any, merge: (x: any) => void): void {
+  private resolverTemplate(jse: any, appSrv: any, merge: (x: any) => void): void {
     const obj: Invokeable = jse.factory();
     appSrv.addController(obj.apiController);
     merge(obj.serverConfig || {});
@@ -76,10 +76,21 @@ export class Invocation {
     return this.getInvokationArgs().preamble();
   }
 
+  private initAppServer(): string[] {
+    return [
+      'const appServer = new AppServer();',
+      'const appServerConfig = {};',
+      'function appServerMerge(cfg) { Object.assign(appServerConfig, cfg || {}); };',
+      // tslint:disable-next-line: no-any
+      `function ${this.resolverTemplate as any}`
+    ];
+  }
+
   public build(reqs: string[]): string {
     const js = this.preamble()
       .concat(reqs)
       .concat(this.createServer())
+      .concat(this.initAppServer())
       .concat(this.jsEntryPoints)
       .concat(this.startServer());
     return js.join('\n');
