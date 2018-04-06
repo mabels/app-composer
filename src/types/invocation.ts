@@ -16,13 +16,6 @@ export class Invocation {
       obj.jsLocalRequires, obj.jsGlobalRequires);
   }
 
-  // tslint:disable-next-line
-  private resolverTemplate(jse: any, appSrv: any, merge: (x: any) => void): void {
-    const obj: Invokeable = jse.factory();
-    appSrv.addController(obj.apiController);
-    merge(obj.serverConfig || {});
-  }
-
   public constructor(packageName: string,
     jeps: string[] = [], jlrs: string[] = [], jgrs: string[] = []) {
     this.packageName = packageName;
@@ -46,7 +39,8 @@ export class Invocation {
         this.invokationArgs = {
           preamble: () => ['// preamble'],
           createServer: () => ['// create server'],
-          startServer: () => ['// start server']
+          startServer: () => ['// start server'],
+          appServerConfig: () => { return { port: '8080' }; }
         };
       }
     }
@@ -58,13 +52,15 @@ export class Invocation {
   }
 
   public add(entryPoint: EntryPoint): void {
+    console.log(entryPoint);
+
     // console.log(`XXX:${JSON.stringify(entryPoint, null, 2)}`);
     if (entryPoint.entryPointFile) {
       const jsEntryPoint = `entryPoint${entryPoint.jsAppName()}`;
       this.jsLocalRequires.push(`const ${jsEntryPoint} = require('${entryPoint.entryPointFile}');`);
       this.jsGlobalRequires.push(
         `const ${jsEntryPoint} = require('${entryPoint.packageJson.name}/${entryPoint.entryPointFile}');`);
-      this.jsEntryPoints.push(`resolverTemplate(${jsEntryPoint}, appServer, appServerMerge)`);
+      this.jsEntryPoints.push(`appServer.addInvokable(${jsEntryPoint}.factory())`);
     }
   }
 
@@ -79,10 +75,7 @@ export class Invocation {
   private initAppServer(): string[] {
     return [
       'const appServer = new AppServer();',
-      'const appServerConfig = {};',
-      'function appServerMerge(cfg) { Object.assign(appServerConfig, cfg || {}); };',
-      // tslint:disable-next-line: no-any
-      `function ${this.resolverTemplate as any}`
+      `const appServerConfig = ${JSON.stringify(this.getInvokationArgs().appServerConfig())};`,
     ];
   }
 
