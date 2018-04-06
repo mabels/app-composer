@@ -51,8 +51,6 @@ export class Invocation {
   }
 
   public add(entryPoint: EntryPoint): void {
-    console.log(entryPoint);
-
     // console.log(`XXX:${JSON.stringify(entryPoint, null, 2)}`);
     if (entryPoint.entryPointFile) {
       const jsEntryPoint = `entryPoint${entryPoint.jsAppName()}`;
