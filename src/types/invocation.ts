@@ -1,5 +1,4 @@
 import { EntryPoint } from './entry-point';
-import { Invokeable } from './invokeable';
 import { InvokationArgs } from './invokation-args';
 import { loadConfig } from '../functions/config-loader';
 
