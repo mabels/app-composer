@@ -1,9 +1,10 @@
 
 export interface ServerConfig {
+  port: number;
+  authPassword?: string;
+  authUser?: string;
   baseUrl?: string;
   cors?: RegExp[];
-  port: number;
   crsfCookieDomain?: string;
-  authUser?: string;
-  authPassword?: string;
+  name?: string;
 }
