@@ -47,11 +47,9 @@ export class PackageJson implements PackageJsonSchema {
       author: 'composer',
       scripts: {
         dev: 'exec node index.js',
-        bootstrap: "node -e 'require(\"app-composer\").createBuildPack(process.cwd());'"
+        bootstrap: "yarn add app-composer --dev && node -e 'require(\"app-composer\").createBuildPack(process.cwd());'"
       },
-      devDependencies: {
-        'app-composer': '*'
-      },
+      devDependencies: {},
       dependencies: {}
     };
     pkgs.forEach((names) => {

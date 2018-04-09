@@ -48,17 +48,6 @@ function pack(packageName: string, sourceFolder: string, targetFolder: string): 
   return true;
 }
 
-function addAppComposer(basePath: string): void {
-  console.log(`adding app composer in ${basePath}`);
-  execa.sync('yarn', ['add',
-                      'app-composer',
-                      '--no-progress',
-                      '--non-interactive',
-                      `--modules-folder=${path.join(basePath, 'node_modules')}`], {
-    cwd: basePath
-  });
-}
-
 export function createPkg(basePath: string = './', projectDependencies?: { [id: string]: string }): void {
   const packageJson = PackageJson.read(basePath);
   if (!PackageJson.isComposable(packageJson)) {
@@ -81,9 +70,5 @@ export function createPkg(basePath: string = './', projectDependencies?: { [id: 
     const js = invokePackage(basePath, path.basename(pkgFname), entryPoints);
     PackageJson.writeDummy('app-composer', composePath, []);
     fs.writeFileSync(`${pkgFname}.Invocation.json`, JSON.stringify(js.invocation, null, 2));
-  });
-
-  Object.keys(composePaths).forEach((p) => {
-    addAppComposer(path.resolve(p));
   });
 }
