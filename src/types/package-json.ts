@@ -32,10 +32,20 @@ export class PackageJson implements PackageJsonSchema {
   public readonly devDependencies?: { [id: string]: string };
   public readonly 'app-composer'?: { [id: string]: PackageJsonAppComposer };
 
-  public static read(basePath: string): PackageJson {
-    const packageJsonFname = path.join(basePath, 'package.json');
-    const packageJson = new PackageJson(JSON.parse(fs.readFileSync(packageJsonFname).toString()));
-    return packageJson;
+  public static read(basePath: string, startPath = ''): PackageJson {
+    basePath = path.resolve(basePath);
+    startPath = startPath == '' ? basePath : startPath;
+    const packageJsonFname = basePath.endsWith('package.json') ? basePath : path.join(basePath, 'package.json');
+
+    if (fs.existsSync(packageJsonFname)) {
+      return new PackageJson(JSON.parse(fs.readFileSync(packageJsonFname).toString()));
+    }
+
+    if (path.dirname(basePath) == basePath) {
+      throw Error(`Unable to find package.json in '${startPath}'`);
+    }
+
+    return this.read(path.dirname(basePath), startPath);
   }
 
   public static writeDummy(pkgName: string, directory: string, pkgs: Names[]): string {
