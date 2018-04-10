@@ -1,9 +1,11 @@
 import * as execa from 'execa';
 import { WatcherState } from './watcher-state';
-import { extractFromCompose } from '../functions/extract-from-compose';
-import { PackageJson } from '../types/package-json';
 import { writeComposedJs } from '../functions/write-composed-js';
 import { lstEqual } from '../functions/lst-equal';
+import { getArchives,
+  createCombinedPackageJson,
+  readPackageJsonFromArchives,
+  extractArchives } from '../functions/packer';
 
 export class Watcher {
   public prevPkgs: string[] = [];
@@ -65,32 +67,31 @@ export class Watcher {
       return;
     }
     this.watcherState = WatcherState.RESTART;
-    extractFromCompose(this.baseDir, this.watchDir, this.prevPkgs).then((pkgs) => {
-      // packageJson
-      PackageJson.writeDummy(this.pkgName, this.baseDir, pkgs);
-      const composeJsFname = writeComposedJs(this.pkgName, this.baseDir, pkgs);
-      console.log(`ComposedFname:${composeJsFname}`);
-      // composeJs
-      const pkgsNames = pkgs.map((p) => p.package);
+
+    getArchives(this.baseDir).then((archives) => {
+      if (!archives) {
+          return;
+      }
+
+      const packageJson = createCombinedPackageJson(readPackageJsonFromArchives(archives), this.baseDir);
+
+      const pkgsNames: string[] = [];
+      Object.keys(packageJson.dependencies).reduce((pkgs, dep) => { pkgs.push(dep); return pkgs; }, pkgsNames);
+      Object.keys(packageJson.devDependencies).reduce((pkgs, dep) => { pkgs.push(dep); return pkgs; }, pkgsNames);
+
       if (!lstEqual(pkgsNames, this.prevPkgs)) {
         this.prevPkgs = pkgsNames;
         console.log(`Yarn Setup needed`);
-        const yarnExec = execa('yarn', []);
-        yarnExec.stdout.pipe(process.stdout);
-        yarnExec.stderr.pipe(process.stderr);
-        yarnExec.on('close', () => {
-          console.log(`From-Yarn to StartComposedJS`);
-          this.restartComposeJs(composeJsFname);
-          this.watcherState = WatcherState.COULDSTARTED;
-          this.restartDog(this.watcherSrc);
-        });
-        return;
-      } else {
-        console.log(`Simple StartComposedJS`);
+        execa.sync('yarn', []);
+      }
+      extractArchives(archives, this.baseDir).then((pkgs) => {
+        const composeJsFname = writeComposedJs(this.pkgName, this.baseDir, pkgs);
         this.restartComposeJs(composeJsFname);
         this.watcherState = WatcherState.COULDSTARTED;
         this.restartDog(this.watcherSrc);
-      }
+      }).catch((e) => {
+        console.error(e);
+      });
     }).catch((e) => {
       console.error(e);
     });

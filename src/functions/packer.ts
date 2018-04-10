@@ -5,7 +5,7 @@ import { extractor } from './extractor';
 import { writeComposedJs } from './write-composed-js';
 import { Names } from '../types/names';
 
-async function getArchives(basePath: string): Promise<string[]> {
+export async function getArchives(basePath: string): Promise<string[]> {
     // tslint:disable-next-line: no-var-requires no-require-imports
     const globby = require('globby');
     const globFiles = `${basePath}/**/*tgz`;
@@ -14,7 +14,7 @@ async function getArchives(basePath: string): Promise<string[]> {
     return await globby([globFiles, globExcludeNodeModules]);
 }
 
-function extractArchives(archives: string[], destination: string): Promise<Names[]> {
+export function extractArchives(archives: string[], destination: string): Promise<Names[]> {
     return extractor(path.join(destination, 'node_modules'), createNames(archives));
 }
 
@@ -28,7 +28,7 @@ function createNames(archives: string[]): Names[] {
     });
 }
 
-function createCombinedPackageJson(packageFiles: PackageJson[], basePath: string): void {
+export function createCombinedPackageJson(packageFiles: PackageJson[], basePath: string): PackageJson {
     let result = PackageJson.read(basePath);
 
     packageFiles.forEach((pkg) => {
@@ -37,6 +37,7 @@ function createCombinedPackageJson(packageFiles: PackageJson[], basePath: string
 
     result = result.removeDependencies(packageFiles.map((p) => p.name));
     result.write(path.join(basePath, 'package.json'));
+    return result;
 }
 
 function createStartupScript(names: Names[], basePath: string): void {
@@ -44,7 +45,7 @@ function createStartupScript(names: Names[], basePath: string): void {
     writeComposedJs('composed', basePath, names);
 }
 
-function readPackageJsonFromArchives(archives: string[]): PackageJson[] {
+export function readPackageJsonFromArchives(archives: string[]): PackageJson[] {
     const result: string[] = [];
     archives.forEach((archive) => {
         const packageJson = execa.sync('tar', ['-xf', archive, 'package/package.json', '-O']);

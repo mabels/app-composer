@@ -56,7 +56,8 @@ export class PackageJson implements PackageJsonSchema {
       license: 'UNLICENSED',
       author: 'composer',
       scripts: {
-        dev: 'exec node index.js',
+        start: 'exec node index.js',
+        watch: "node -e 'require(\"app-composer\").startWatchComposer(process.cwd())'",
         bootstrap: "yarn add app-composer --dev && node -e 'require(\"app-composer\").createBuildPack(process.cwd());'"
       },
       devDependencies: {},
