@@ -3,8 +3,10 @@ import * as fs from 'fs';
 import { Names } from './names';
 
 export interface PackageJsonAppComposer {
-
+  'entry-point-file': string;
+  compose: string;
 }
+
 export interface PackageJsonSchema {
   name: string;
   version: string;
