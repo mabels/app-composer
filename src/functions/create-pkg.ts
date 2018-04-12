@@ -17,7 +17,6 @@ function addProjectPackages(pkgDeps: objMap, projectDeps: objMap, targetFolder: 
   Object.keys(projectDeps).forEach((dependencyName) => {
     if (pkgDeps[dependencyName]) {
       const pathToProject = projectDeps[dependencyName];
-      console.log(`packing local dependency '${dependencyName}' from ${pathToProject}`);
       const packageJson = PackageJson.read(pathToProject);
       if (pack(packageJson.name, pathToProject, targetFolder)) {
         addProjectPackages(packageJson.dependencies, projectDeps, targetFolder);
@@ -59,7 +58,8 @@ export function createPkg(basePath: string = './', projectDependencies?: { [id: 
 
   const composePaths: objMap = {};
   perCompose.forEach((entryPoints, composePath) => {
-    const composeDir = `${composePath}/compose`;
+    composePath = path.resolve(basePath, composePath);
+    const composeDir = path.join(composePath, 'compose');
     const pkgFname = path.join(composeDir, `${packageJson.name}`);
 
     pack(packageJson.name, basePath, composePath);
