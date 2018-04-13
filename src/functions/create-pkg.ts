@@ -29,11 +29,11 @@ function addProjectPackages(pkgDeps: ObjMap, targetFolder: string, options: Crea
   });
 }
 
-function pack(packageName: string, sourceFolder: string, targetFolder: string, options: CreatePkgOptions): boolean {
-  const composeDir = path.join(targetFolder, 'compose');
-  const tmpDir = path.join(targetFolder, '.tmp', uuid.v4());
-  const pkgFileName = path.join(composeDir, `${packageName}`);
-  const tmpFileName = path.join(tmpDir, `${packageName}`);
+export function pack(pkgName: string, srcFolder: string, trgFolder: string, options: CreatePkgOptions): boolean {
+  const composeDir = path.join(trgFolder, 'compose');
+  const tmpDir = path.join(trgFolder, '.tmp', uuid.v4());
+  const pkgFileName = path.join(composeDir, `${pkgName}`);
+  const tmpFileName = path.join(tmpDir, `${pkgName}`);
 
   if (!options.replace && fs.existsSync(`${pkgFileName}.npm.tgz`)) {
     console.log(`${pkgFileName}.npm.tgz already exists. Skip packing...`);
@@ -45,7 +45,7 @@ function pack(packageName: string, sourceFolder: string, targetFolder: string, o
 
   console.log(`yarn pack -f ${tmpFileName}.npm.tgz`);
   execa.sync('yarn', ['pack', '-f', `${tmpFileName}.npm.tgz`, '--no-progress', 'non-interactive'],
-    { cwd: sourceFolder });
+    { cwd: srcFolder });
 
   fs.renameSync(`${tmpFileName}.npm.tgz`, `${pkgFileName}.npm.tgz`);
   return true;

@@ -17,7 +17,7 @@ export { filesToNames } from './functions/files-to-names';
 export { startGlobalWatch } from './functions/start-global-watch';
 export { invokePackage } from './functions/invoke-package';
 export { startApp } from './functions/start-app';
-export { createPkg, CreatePkgOptions } from './functions/create-pkg';
+export { createPkg, CreatePkgOptions, pack } from './functions/create-pkg';
 export { startWatchComposer } from './functions/start-watch-composer';
 export { transformToCompose } from './functions/transform-to-compose';
 export { writeComposedJs } from './functions/write-composed-js';
