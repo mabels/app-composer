@@ -43,10 +43,7 @@ export function pack(pkgName: string, srcFolder: string, trgFolder: string, opti
   mkdirp.sync(path.dirname(pkgFileName));
   mkdirp.sync(path.dirname(tmpFileName));
 
-  console.log(`yarn pack -f ${tmpFileName}.npm.tgz`);
-  execa.sync('yarn', ['pack', '-f', `${tmpFileName}.npm.tgz`, '--no-progress', 'non-interactive'],
-    { cwd: srcFolder });
-
+  execa.sync('yarn', ['pack', '-f', `${tmpFileName}.npm.tgz`, '--silent'], { cwd: srcFolder });
   fs.renameSync(`${tmpFileName}.npm.tgz`, `${pkgFileName}.npm.tgz`);
   return true;
 }
