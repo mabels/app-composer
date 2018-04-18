@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 import { AppComposerConfig } from '../types/app-composer-config';
-import { InvokationArgs } from '../types/invokation-args';
+import { InvokableArgs } from '../types/invokable-args';
 
 const constFileName = 'app-composer.config';
 
@@ -19,7 +19,7 @@ function findConfig(basePath: string): string {
     return findConfig(path.dirname(basePath));
 }
 
-function loadInvokationArgs(identifier: string): InvokationArgs {
+function loadInvokationArgs(identifier: string): InvokableArgs {
     try {
         return require(identifier);
     } catch (e) {

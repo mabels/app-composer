@@ -1,5 +1,5 @@
-import { InvokationArgs } from './invokation-args';
+import { InvokableArgs } from './invokable-args';
 
 export interface AppComposerConfig {
-    invokationArgs: InvokationArgs;
+    invokationArgs: InvokableArgs;
 }

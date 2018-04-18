@@ -1,4 +1,4 @@
-export interface InvokationArgs {
+export interface InvokableArgs {
     preamble(): string[];
     createServer(): string[];
     startServer(): string[];

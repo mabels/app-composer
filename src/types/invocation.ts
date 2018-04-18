@@ -1,5 +1,5 @@
 import { EntryPoint } from './entry-point';
-import { InvokationArgs } from './invokation-args';
+import { InvokableArgs } from './invokable-args';
 import { loadConfig } from '../functions/config-loader';
 
 export class Invocation {
@@ -7,7 +7,7 @@ export class Invocation {
   public readonly jsEntryPoints: string[];
   public readonly jsLocalRequires: string[];
   public readonly jsGlobalRequires: string[];
-  private invokationArgs: InvokationArgs;
+  private invokableArgs: InvokableArgs;
 
   // tslint:disable-next-line: no-any
   public static fill(obj: any): Invocation {
@@ -29,13 +29,13 @@ export class Invocation {
     this.jsGlobalRequires.push.apply(this.jsGlobalRequires, other.jsGlobalRequires);
   }
 
-  private getInvokationArgs(): InvokationArgs {
-    if (!this.invokationArgs) {
+  private getInvokableArgs(): InvokableArgs {
+    if (!this.invokableArgs) {
       try {
-        this.invokationArgs = loadConfig(process.cwd()).invokationArgs;
+        this.invokableArgs = loadConfig(process.cwd()).invokationArgs;
       } catch (e) {
         console.warn('could not load invokation args. Using stub args.');
-        this.invokationArgs = {
+        this.invokableArgs = {
           preamble: () => ['// preamble'],
           createServer: () => ['// create server'],
           startServer: () => ['// start server'],
@@ -43,11 +43,11 @@ export class Invocation {
         };
       }
     }
-    return this.invokationArgs;
+    return this.invokableArgs;
   }
 
   private createServer(): string[] {
-    return this.getInvokationArgs().createServer();
+    return this.getInvokableArgs().createServer();
   }
 
   public add(entryPoint: EntryPoint): void {
@@ -62,17 +62,17 @@ export class Invocation {
   }
 
   private startServer(): string[] {
-    return this.getInvokationArgs().startServer();
+    return this.getInvokableArgs().startServer();
   }
 
   private preamble(): string[] {
-    return this.getInvokationArgs().preamble();
+    return this.getInvokableArgs().preamble();
   }
 
   private initAppServer(): string[] {
     return [
       'const appServer = new AppServer();',
-      `const appServerConfig = ${JSON.stringify(this.getInvokationArgs().appServerConfig())};`,
+      `const appServerConfig = ${JSON.stringify(this.getInvokableArgs().appServerConfig())};`,
     ];
   }
 
