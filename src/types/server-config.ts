@@ -6,5 +6,4 @@ export interface ServerConfig {
   baseUrl?: string;
   cors?: RegExp[];
   crsfCookieDomain?: string;
-  name?: string;
 }
