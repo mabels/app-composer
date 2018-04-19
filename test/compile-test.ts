@@ -4,7 +4,10 @@ import * as assert from 'assert';
 describe('AppComposer', () => {
 
   it('new AppComposer', () => {
-    const ac = new AppComposer('hello');
+    const config = {
+      port: 80
+    };
+    const ac = new AppComposer('hello', config);
     assert.equal(ac.baseUrl, 'hello');
     assert.ok(ac.express);
   });
