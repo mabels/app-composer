@@ -5,7 +5,6 @@ import { extractor } from './extractor';
 import { writeComposedJs } from './write-composed-js';
 import { Names } from '../types/names';
 import { getPackageJsonFromArchive } from './archive-reader';
-import { arch } from 'os';
 
 export async function getArchives(basePath: string): Promise<string[]> {
     // tslint:disable-next-line: no-var-requires no-require-imports

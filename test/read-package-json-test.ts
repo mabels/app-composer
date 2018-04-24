@@ -1,8 +1,6 @@
 import { getPackageJsonFromArchive } from '../src/functions/archive-reader';
 import * as assert from 'assert';
-import * as execa from 'execa';
 import * as path from 'path';
-import * as uuid from 'uuid';
 
 describe('getPackageJsonFromArchive', () => {
   it('read', async () => {
