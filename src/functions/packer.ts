@@ -4,6 +4,8 @@ import { PackageJson } from '../types/package-json';
 import { extractor } from './extractor';
 import { writeComposedJs } from './write-composed-js';
 import { Names } from '../types/names';
+import { getPackageJsonFromArchive } from './archive-reader';
+import { arch } from 'os';
 
 export async function getArchives(basePath: string): Promise<string[]> {
     // tslint:disable-next-line: no-var-requires no-require-imports
@@ -45,14 +47,8 @@ function createStartupScript(names: Names[], basePath: string): void {
     writeComposedJs('composed', basePath, names);
 }
 
-export function readPackageJsonFromArchives(archives: string[]): PackageJson[] {
-    const result: string[] = [];
-    archives.forEach((archive) => {
-        const packageJson = execa.sync('tar', ['-xf', archive, 'package/package.json', '-O']);
-        result.push(packageJson.stdout);
-    });
-
-    return result.map((packageJson) => new PackageJson(JSON.parse(packageJson)));
+export function readPackageJsonFromArchives(archives: string[]): Promise<PackageJson[]> {
+    return Promise.all(archives.map((a) => getPackageJsonFromArchive(a)));
 }
 
 function installPackages(basePath: string): void {
@@ -68,12 +64,12 @@ export function createBuildPack(basePath: string): void {
             return;
         }
 
-        createCombinedPackageJson(readPackageJsonFromArchives(archives), basePath);
-
-        installPackages(basePath);
-
-        extractArchives(archives, basePath).then((names) => {
-            createStartupScript(names, basePath);
+        readPackageJsonFromArchives(archives).then((files) => {
+            createCombinedPackageJson(files, basePath);
+            installPackages(basePath);
+            extractArchives(archives, basePath)
+            .then((names) => createStartupScript(names, basePath))
+            .catch((e) => console.error(e));
         }).catch((e) => console.error(e));
     }).catch((e) => console.error(e));
 }

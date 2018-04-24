@@ -73,25 +73,27 @@ export class Watcher {
           return;
       }
 
-      const packageJson = createCombinedPackageJson(readPackageJsonFromArchives(archives), this.baseDir);
+      readPackageJsonFromArchives(archives).then((files) => {
+        const packageJson = createCombinedPackageJson(files, this.baseDir);
 
-      const pkgsNames: string[] = [];
-      Object.keys(packageJson.dependencies).reduce((pkgs, dep) => { pkgs.push(dep); return pkgs; }, pkgsNames);
-      Object.keys(packageJson.devDependencies).reduce((pkgs, dep) => { pkgs.push(dep); return pkgs; }, pkgsNames);
+        const pkgsNames: string[] = [];
+        Object.keys(packageJson.dependencies).reduce((pkgs, dep) => { pkgs.push(dep); return pkgs; }, pkgsNames);
+        Object.keys(packageJson.devDependencies).reduce((pkgs, dep) => { pkgs.push(dep); return pkgs; }, pkgsNames);
 
-      if (!lstEqual(pkgsNames, this.prevPkgs)) {
-        this.prevPkgs = pkgsNames;
-        console.log(`Yarn Setup needed`);
-        execa.sync('yarn', []);
-      }
-      extractArchives(archives, this.baseDir).then((pkgs) => {
-        const composeJsFname = writeComposedJs(this.pkgName, this.baseDir, pkgs);
-        this.restartComposeJs(composeJsFname);
-        this.watcherState = WatcherState.COULDSTARTED;
-        this.restartDog(this.watcherSrc);
-      }).catch((e) => {
-        console.error(e);
-      });
+        if (!lstEqual(pkgsNames, this.prevPkgs)) {
+          this.prevPkgs = pkgsNames;
+          console.log(`Yarn Setup needed`);
+          execa.sync('yarn', []);
+        }
+        extractArchives(archives, this.baseDir).then((pkgs) => {
+          const composeJsFname = writeComposedJs(this.pkgName, this.baseDir, pkgs);
+          this.restartComposeJs(composeJsFname);
+          this.watcherState = WatcherState.COULDSTARTED;
+          this.restartDog(this.watcherSrc);
+        }).catch((e) => {
+          console.error(e);
+        });
+      }).catch((e) => console.error(e));
     }).catch((e) => {
       console.error(e);
     });
