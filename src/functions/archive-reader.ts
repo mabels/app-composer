@@ -21,7 +21,7 @@ export function getPackageJsonFromArchive(path: string): Promise<PackageJson> {
 
         extract.on('entry', (header: Header, stream: Readable, next: () => void) => {
             stream.on('end', next);
-            if (header.name == 'package/package.json') {
+            if (header.name == 'package/package.json' || header.name == 'package.json') {
                 stream.on('data', (streamData: Buffer) => data.push(streamData.toString()));
             }
             stream.resume();
@@ -31,6 +31,7 @@ export function getPackageJsonFromArchive(path: string): Promise<PackageJson> {
             try {
                 rs(JSON.parse(data.join('')));
             } catch (e) {
+                console.log(data.join(''));
                 console.error(`unable to parse package json from ${path}`);
                 rj(e);
             }
