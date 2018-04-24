@@ -21,7 +21,7 @@ export function getPackageJsonFromArchive(path: string): Promise<PackageJson> {
 
         extract.on('entry', (header: Header, stream: Readable, next: () => void) => {
             stream.on('end', next);
-            if (header.name.endsWith('package.json')) {
+            if (header.name == 'package/package.json') {
                 stream.on('data', (streamData: Buffer) => data.push(streamData.toString()));
             }
             stream.resume();
