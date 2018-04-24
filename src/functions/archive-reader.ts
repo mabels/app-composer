@@ -31,6 +31,7 @@ export function getPackageJsonFromArchive(path: string): Promise<PackageJson> {
             try {
                 rs(JSON.parse(data.join('')));
             } catch (e) {
+                console.error(`unable to parse package json from ${path}`);
                 rj(e);
             }
         });
