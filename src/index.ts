@@ -6,7 +6,7 @@ export { Invokeable } from './types/invokeable';
 export { InvokePackage } from './types/invoke-package';
 export { Names } from './types/names';
 export { PackageJson, PackageJsonSchema } from './types/package-json';
-export { ServerConfig } from './types/server-config';
+export { ServerConfig, UserPassword } from './types/server-config';
 export { Suffixes } from './types/suffixes';
 export { WatcherState } from './types/watcher-state';
 export { Watcher } from './types/watcher';
