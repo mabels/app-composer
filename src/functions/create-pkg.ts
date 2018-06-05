@@ -36,9 +36,10 @@ export function pack(pkgName: string, srcFolder: string, trgFolder: string, opti
   const tmpFileName = path.join(tmpDir, `${pkgName}`);
 
   if (!options.replace && fs.existsSync(`${pkgFileName}.npm.tgz`)) {
-    console.log(`${pkgFileName}.npm.tgz already exists. Skip packing...`);
     return false;
   }
+
+  console.log(`creating ${pkgFileName}.npm.tgz`);
 
   mkdirp.sync(path.dirname(pkgFileName));
   mkdirp.sync(path.dirname(tmpFileName));
