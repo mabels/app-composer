@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import * as mkdirp from './folder-creator';
 import * as execa from 'execa';
+import * as mkdirp from './folder-creator';
 import { PackageJson } from '../types/package-json';
 import { invokePackage } from './invoke-package';
 import { transformToCompose } from './transform-to-compose';

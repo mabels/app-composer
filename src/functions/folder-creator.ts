@@ -5,18 +5,33 @@ function mkdirp(
   dir: string,
   opts: mkdirp2.Mode | mkdirp2.Options,
   cb: (err: NodeJS.ErrnoException, made: mkdirp2.Made) => void): void {
-  return mkdirp2(dir, opts, (err) => {
-    if (err) {
-      handleExistingError(err);
-      return mkdirp2(dir, opts, cb);
-    }
-  });
+  if (opts) {
+    return mkdirp2(dir, opts, (err, made) => {
+      if (err) {
+        handleExistingError(err);
+        return mkdirp2(dir, opts, cb);
+      } else {
+        cb(err, made);
+      }
+    });
+  } else {
+    return mkdirp2(dir, (err, made) => {
+      if (err) {
+        handleExistingError(err);
+        return mkdirp2(dir, cb);
+      } else {
+        cb(err, made);
+      }
+    });
+  }
 }
 
 function handleExistingError(e: NodeJS.ErrnoException): void {
   if (e.code === 'EEXIST') {
+    console.log('path already exists ', e.path);
     const stats = fs.lstatSync(e.path);
     if (stats.isSymbolicLink()) {
+      console.log('assuming link! try to unlink', e.path);
       fs.unlinkSync(e.path);
     } else {
       throw e;

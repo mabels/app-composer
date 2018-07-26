@@ -54,7 +54,7 @@ describe('FolderCreation', () => {
     assert.equal(fileStats.isDirectory(), false, `${file} unexpectedly ia a directory`);
   });
 
-  it('should remove a symlink with identical name and create a folder', () => {
+  it('should synchronously remove a symlink with identical name and create a folder', () => {
     mock({
       'dir': {
         'file': 'file contents',
@@ -75,5 +75,32 @@ describe('FolderCreation', () => {
     assert.equal(fileStats.isFile(), false, `${directory} unexpectedly is a file`);
     assert.equal(fileStats.isSymbolicLink(), false, `${directory} unexpectedly is a symbolic link`);
     assert.equal(fileStats.isDirectory(), true, `${directory} unexpectedly is not a directory`);
+  });
+
+  it('should asynchronously remove a symlink with identical name and create a folder', () => {
+    mock({
+      'dir': {
+        'file': 'file contents',
+        'symlink': mock.symlink({
+          path: 'file'
+        })
+      }
+    });
+    const directory = 'dir/symlink';
+    const initialStats: fs.Stats = fs.lstatSync(directory);
+    assert.equal(initialStats.isSymbolicLink(), true, `initially ${directory} should be a symlink`);
+
+    mkdirp(directory, undefined, (err) => {
+      if (err) {
+        assert.fail('mkdrip not allowed to fail');
+        return;
+      }
+
+      assert.equal(fs.existsSync(directory), true, `${directory} should exist`);
+      const fileStats: fs.Stats = fs.lstatSync(directory);
+      assert.equal(fileStats.isFile(), false, `${directory} unexpectedly is a file`);
+      assert.equal(fileStats.isSymbolicLink(), false, `${directory} unexpectedly is a symbolic link`);
+      assert.equal(fileStats.isDirectory(), true, `${directory} unexpectedly is not a directory`);
+    });
   });
 });

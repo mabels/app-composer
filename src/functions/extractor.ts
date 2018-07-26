@@ -1,8 +1,8 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import * as mkdirp from 'mkdirp';
 import * as execa from 'execa';
 import * as rimraf from 'rimraf';
+import * as mkdirp from './folder-creator';
 import { Names } from '../types/names';
 import * as uuid from 'uuid';
 
@@ -12,7 +12,7 @@ export function extractor(extractedPath: string, names: Names[]): Promise<Names[
     u.uuid = u.uuid || uuid.v4();
     const tmpDir = path.join(extractedPath, '.temp', u.uuid);
     // console.log(`mkdirp: ${tmpDir}`);
-    mkdirp(tmpDir, (err) => {
+    mkdirp(tmpDir, undefined, (err) => {
       if (err) {
         rj(err);
         return;
@@ -35,7 +35,7 @@ export function extractor(extractedPath: string, names: Names[]): Promise<Names[
             return;
           }
           // console.log(`mkdir to ${path.dirname(pkgDir)}`);
-          mkdirp(path.dirname(pkgDir), (_err2) => {
+          mkdirp(path.dirname(pkgDir), undefined, (_err2) => {
             if (_err2) {
               rj(_err2);
               return;
