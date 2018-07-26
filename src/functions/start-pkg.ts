@@ -5,14 +5,19 @@ import * as execa from 'execa';
 import { PackageJson } from '../types/package-json';
 import { invokePackage } from './invoke-package';
 import { transformToCompose } from './transform-to-compose';
+import { AppComposerImpl } from '../types/app-composer-schema';
 
 export function startPkg(basePath: string = './'): void {
   const packageJson = PackageJson.read(basePath);
   if (!packageJson) {
     return;
   }
-  const appComposer = packageJson['app-composer'];
-  const perCompose = transformToCompose(packageJson, appComposer);
+  if (!packageJson['app-composer']) {
+    console.error(`package.json must contain app-composer from ${basePath}`);
+    return;
+  }
+  const appComposer = AppComposerImpl.from(packageJson.name, packageJson['app-composer']);
+  const perCompose = transformToCompose(appComposer.targets);
 
   perCompose.forEach((entryPoints, pname) => {
     const composeDir = `${pname}/compose`;
@@ -27,12 +32,15 @@ export function startPkg(basePath: string = './'): void {
     yarnExec.stderr.pipe(process.stderr);
     yarnExec.then(() => {
       fs.renameSync(`${tmpPkgFname}.npm.tgz`, `${pkgFname}.npm.tgz`);
-      const js = invokePackage(basePath, path.basename(pkgFname), entryPoints);
+      const js = invokePackage(appComposer.plugins, basePath, path.basename(pkgFname), entryPoints);
       fs.writeFileSync(`${pkgFname}.Invocation.json`, JSON.stringify(js.invocation, null, 2));
       entryPoints.map((ep) => {
-        const composePkgJson = path.join(ep.compose, 'package.json');
+        if (!ep.composeDirectory) {
+          return;
+        }
+        const composePkgJson = path.join(ep.composeDirectory, 'package.json');
         if (!fs.existsSync(composePkgJson)) {
-          PackageJson.writeDummy(path.basename(ep.compose), ep.compose, []);
+          PackageJson.writeDummy(ep.packageName, ep.composeDirectory, []);
         }
       });
     });

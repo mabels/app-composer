@@ -1,30 +1,26 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { Names } from './names';
-import { PackageJsonAppComposer } from './package-json-app-composer';
+import { AppComposerSchema } from './app-composer-schema';
 
 export interface PackageJsonSchema {
   name: string;
   version: string;
-  main: string;
-  license: string;
-  author: string;
-  scripts: {
+  main?: string;
+  license?: string;
+  author?: string;
+  scripts?: {
     dev: string;
   };
   dependencies?: { [id: string]: string };
   devDependencies?: { [id: string]: string };
-  'app-composer'?: PackageJsonAppComposerParams;
+  'app-composer'?: AppComposerSchema;
 }
 
 export class PackageJson {
   public static read(basePath: string): PackageJsonSchema {
     const packageJsonFname = path.join(basePath, 'package.json');
     const packageJson = JSON.parse(fs.readFileSync(packageJsonFname).toString());
-    if (!packageJson['app-composer']) {
-      console.log(`nothing todo app-composer section in ${packageJsonFname}`);
-      return;
-    }
     return packageJson;
   }
 
@@ -57,15 +53,13 @@ export class PackageJson {
     if (!stat) {
       throw new Error(`this must be somewhere ${str}`);
     }
-    let pjson: string;
     let base: string;
     if (stat.isDirectory()) {
       base = str;
-      pjson = path.join(base, 'package.json');
     } else {
       base = path.dirname(str);
-      pjson = path.join(base, 'package.json');
     }
+    const pjson = path.join(base, 'package.json');
     const ret = fs.existsSync(pjson);
     if (!ret) {
       if (base != path.dirname(base)) {

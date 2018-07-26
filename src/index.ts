@@ -21,4 +21,5 @@ export { startWatchComposer } from './functions/start-watch-composer';
 export { transformToCompose } from './functions/transform-to-compose';
 export { writeComposedJs } from './functions/write-composed-js';
 
+import { AppComposer } from './types/app-composer';
 export default AppComposer;

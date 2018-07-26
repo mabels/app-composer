@@ -1,6 +1,6 @@
-import { EntryPoint } from './entry-point';
 import { Invokeable } from './invokeable';
 import { InvocationParams } from './invocation-params';
+import { TargetEntryPoint } from './target-entry-point';
 
 export class Invocation {
   public readonly packageName: string;
@@ -10,10 +10,10 @@ export class Invocation {
   public readonly invocationParams: InvocationParams[];
 
   // tslint:disable-next-line: no-any
-  public static fill(obj: any): Invocation {
-    return new Invocation(obj.packageName, obj.jsEntryPoints,
-      obj.jsLocalRequires, obj.jsGlobalRequires, InvocationParams.fill(obj["app-composer"]));
-  }
+  // public static fill(obj: any): Invocation {
+  //   return new Invocation(obj.packageName, obj.jsEntryPoints,
+  //     obj.jsLocalRequires, obj.jsGlobalRequires, InvocationParams.fill(obj["app-composer"]));
+  // }
 
   // tslint:disable-next-line: no-any
   private static resolverTemplate(jse: any, appSrv: any, merge: (x: any) => void): void {
@@ -22,8 +22,8 @@ export class Invocation {
     merge(obj.serverConfig || {});
   }
 
-  public constructor(packageName: string,
-    jeps: string[] = [], jlrs: string[] = [], jgrs: string[] = [], obj: ) {
+  public constructor(invocationParams: InvocationParams[], packageName: string,
+    jeps: string[] = [], jlrs: string[] = [], jgrs: string[] = []) {
     this.packageName = packageName;
     this.jsEntryPoints = jeps;
     this.jsLocalRequires = jlrs;
@@ -48,9 +48,9 @@ export class Invocation {
     ];
   }
 
-  public add(entryPoint: EntryPoint): void {
+  public add(entryPoint: TargetEntryPoint): void {
     // console.log(`XXX:${JSON.stringify(entryPoint, null, 2)}`);
-    if (entryPoint.entryPointFile) {
+    if (entryPoint.moduleName) {
       const jsEntryPoint = `entryPoint${entryPoint.jsAppName()}`;
       this.jsLocalRequires.push(`const ${jsEntryPoint} = require('${entryPoint.entryPointFile}');`);
       this.jsGlobalRequires.push(

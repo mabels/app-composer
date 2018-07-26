@@ -1,19 +1,25 @@
-import { EntryPoint } from '../types/entry-point';
+import { TargetEntryPoint } from '../types/target-entry-point';
 // tslint:disable-next-line: no-any
-export function transformToCompose(pjs: any, appComposer: any): Map<string, EntryPoint[]> {
-  const perCompose = new Map<string, EntryPoint[]>();
-  Object.keys(appComposer).forEach((epName) => {
-    console.log(`entryPoint=${epName}`);
-    const ep = appComposer[epName];
-    const key = ep['compose'] || epName;
+export function transformToCompose(targets: TargetEntryPoint[]): Map<string, TargetEntryPoint[]> {
+  const perCompose = new Map<string, Map<string, TargetEntryPoint>>();
+  targets.forEach((target) => {
+    // console.log(`entryPoint=${epName}`);
+    // const ep = appComposer[epName];
+    const key = target.composeName;
     let add = perCompose.get(key);
     if (!add) {
-      add = [];
+      add = new Map<string, TargetEntryPoint>();
       perCompose.set(key, add);
     }
     ep['entry-point'] = ep['entry-point'] || key;
     ep['app-name'] = ep['app-name'] || key;
-    add.push(new EntryPoint(pjs, ep));
+    packageName: string, key: string, teps: TargetEntryPointSchema
+    const tep = new TargetEntryPoint();
+    add.set(tep.   new EntryPoint(pjs, ep));
   });
-  return perCompose;
+  const uniq = new Map<string, TargetEntryPoint[]>();
+  perCompose.forEach((val, key) => {
+    uniq.set(key, Array.from(val.values()));
+  });
+  return uniq;
 }
