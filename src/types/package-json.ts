@@ -60,7 +60,14 @@ export class PackageJson implements PackageJsonSchema {
       scripts: {
         start: 'exec node index.js',
         watch: "node -e 'require(\"app-composer\").startWatchComposer(process.cwd())'",
-        bootstrap: "yarn add app-composer --dev && node -e 'require(\"app-composer\").createBuildPack(process.cwd());'"
+        bootstrap: [
+         'echo "deleting node_modules"',
+         'rm -r ./node_modules',
+         'echo "add app-composer dependency"',
+         'yarn add app-composer --dev',
+         'echo "app-composer create buildpack"',
+         'node -e "require(\"app-composer\").createBuildPack(process.cwd());"'
+        ].join(' && ')
       },
       devDependencies: {},
       dependencies: {}
