@@ -19,7 +19,7 @@ function addProjectPackages(pkgDeps: ObjMap, targetFolder: string, options: Crea
   }
 
   Object.keys(options.localDependencies).forEach((dependencyName) => {
-    if (pkgDeps[dependencyName]) {
+    if (pkgDeps && pkgDeps[dependencyName]) {
       const pathToProject = options.localDependencies[dependencyName];
       const packageJson = PackageJson.read(pathToProject);
       if (pack(packageJson.name, pathToProject, targetFolder, options)) {
