@@ -1,4 +1,3 @@
-import * as execa from 'execa';
 import * as path from 'path';
 import { PackageJson } from '../types/package-json';
 import { extractor } from './extractor';
@@ -50,13 +49,6 @@ export function readPackageJsonFromArchives(archives: string[]): Promise<Package
     return Promise.all(archives.map((a) => getPackageJsonFromArchive(a)));
 }
 
-function installPackages(basePath: string): void {
-    console.log('installing packages...');
-    execa.sync('yarn', ['install', '--no-progress', '--non-interactive'], {
-        cwd: basePath
-    });
-}
-
 export function createBuildPack(basePath: string): void {
     getArchives(basePath).then((archives) => {
         if (!archives) {
@@ -65,7 +57,6 @@ export function createBuildPack(basePath: string): void {
 
         readPackageJsonFromArchives(archives).then((files) => {
             createCombinedPackageJson(files, basePath);
-            installPackages(basePath);
             extractArchives(archives, basePath)
             .then((names) => createStartupScript(names, basePath))
             .catch((e) => console.error(e));
