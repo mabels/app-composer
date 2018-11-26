@@ -21,4 +21,4 @@ export { createPkg, CreatePkgOptions, pack } from './functions/create-pkg';
 export { startWatchComposer } from './functions/start-watch-composer';
 export { transformToCompose } from './functions/transform-to-compose';
 export { writeComposedJs } from './functions/write-composed-js';
-export { createBuildPack } from './functions/packer';
+export { createBuildPack, createStartup } from './functions/packer';

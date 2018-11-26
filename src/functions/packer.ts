@@ -57,6 +57,17 @@ export function createBuildPack(basePath: string): void {
 
         readPackageJsonFromArchives(archives).then((files) => {
             createCombinedPackageJson(files, basePath);
+        }).catch((e) => console.error(e));
+    }).catch((e) => console.error(e));
+}
+
+export function createStartup(basePath: string): void {
+    getArchives(basePath).then((archives) => {
+        if (!archives) {
+            return;
+        }
+
+        readPackageJsonFromArchives(archives).then((files) => {
             extractArchives(archives, basePath)
             .then((names) => createStartupScript(names, basePath))
             .catch((e) => console.error(e));
