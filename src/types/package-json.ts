@@ -64,7 +64,9 @@ export class PackageJson implements PackageJsonSchema {
          'echo "add app-composer dependency"',
          'yarn add app-composer --dev',
          'echo "app-composer create buildpack"',
-         'node -e \'require("app-composer").createBuildPack(process.cwd());\''
+         'node -e \'require("app-composer").createBuildPack(process.cwd());\'',
+         'yarn install --offline',
+         'node -e \'require("app-composer").createStartup(process.cwd());\'',
         ].join(' && ')
       },
       devDependencies: {},
