@@ -62,7 +62,7 @@ export class PackageJson implements PackageJsonSchema {
         watch: "node -e 'require(\"app-composer\").startWatchComposer(process.cwd())'",
         bootstrap: [
          'echo "add app-composer dependency"',
-         'yarn add app-composer --dev --pure-lockfile',
+         'yarn add app-composer@1.5.10 --dev --pure-lockfile',
          'echo "app-composer create buildpack"',
          'node -e \'require("app-composer").createBuildPack(process.cwd());\'',
          'echo "install dependencies ..."',
