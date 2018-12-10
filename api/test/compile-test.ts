@@ -2,8 +2,7 @@ import { AppComposer } from '../src';
 import * as assert from 'assert';
 
 describe('AppComposer', () => {
-
-  it('new AppComposer', () => {
+  test('new AppComposer', () => {
     const config = {
       port: 80
     };
@@ -11,5 +10,4 @@ describe('AppComposer', () => {
     assert.equal(ac.baseUrl, 'hello');
     assert.ok(ac.express);
   });
-
 });

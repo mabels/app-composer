@@ -1,10 +1,20 @@
 import * as fs from 'fs';
 import * as mkdirp2 from 'mkdirp';
 
-function mkdirp(
+export interface MkdirP {
+  (
+    dir: string,
+    opts: mkdirp2.Mode | mkdirp2.Options,
+    cb: (err: NodeJS.ErrnoException, made: mkdirp2.Made) => void
+  ): void;
+  sync(dir: string, opts?: mkdirp2.Mode | mkdirp2.OptionsSync): mkdirp2.Made;
+}
+
+function Fnmkdirp(
   dir: string,
   opts: mkdirp2.Mode | mkdirp2.Options,
-  cb: (err: NodeJS.ErrnoException, made: mkdirp2.Made) => void): void {
+  cb: (err: NodeJS.ErrnoException, made?: mkdirp2.Made) => void
+): void {
   if (opts) {
     return mkdirp2(dir, opts, (err, made) => {
       if (err) {
@@ -28,10 +38,10 @@ function mkdirp(
 
 function handleExistingError(e: NodeJS.ErrnoException): void {
   if (e.code === 'EEXIST') {
-    console.log('path already exists ', e.path);
+    console.error('path already exists ', e.path);
     const stats = fs.lstatSync(e.path);
     if (stats.isSymbolicLink()) {
-      console.log('assuming link! try to unlink', e.path);
+      console.warn('assuming link! try to unlink', e.path);
       fs.unlinkSync(e.path);
     } else {
       throw e;
@@ -39,14 +49,17 @@ function handleExistingError(e: NodeJS.ErrnoException): void {
   }
 }
 
-namespace mkdirp {
-  export function sync(dir: string, opts?: mkdirp2.Mode | mkdirp2.OptionsSync): mkdirp2.Made {
-    try {
-      return mkdirp2.sync(dir, opts);
-    } catch (e) {
-      handleExistingError(e);
-      return mkdirp2.sync(dir, opts);
-    }
+Fnmkdirp.sync = function(
+  dir: string,
+  opts?: mkdirp2.Mode | mkdirp2.OptionsSync
+): mkdirp2.Made {
+  // console.log('WWWWW');
+  try {
+    return mkdirp2.sync(dir, opts);
+  } catch (e) {
+    handleExistingError(e);
+    return mkdirp2.sync(dir, opts);
   }
-}
-export = mkdirp;
+};
+
+export const mkdirp: MkdirP = Fnmkdirp as MkdirP;

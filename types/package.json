@@ -2,19 +2,32 @@
   "name": "@app-composer/types",
   "version": "2.0.0",
   "description": "app composer interface component",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "bin",
-    "src",
-    "test",
-    "dist",
-    "tsconfig.json",
-    "tslint.json"
-  ],
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "module": "./esm/index.js",
+  "license": "AFL-2.0",
+  "author": {
+    "name": "Meno Abels"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mabels/app-composer.git"
+  },
+  "homepage": "https://github.com/mabels/app-composer#readme",
+  "engines": {
+    "node": ">8.0.0"
+  },
   "scripts": {
-    "clean": "rimraf dist",
-    "build": "tsc"
+    "clean": "rimraf lib esm",
+    "build": "npm run build:commonjs && npm run build:esm",
+    "build:commonjs": "tsc --project .",
+    "build:esm": "tsc --project . --outdir esm --module esnext",
+    "test": "jest -c jest.unit.js",
+    "test:integration": "jest -c jest.integration.js",
+    "lint": "tslint --project .",
+    "prerelease": "git checkout master && git pull --ff-only origin master && yarn && yarn clean && yarn lint && yarn test && yarn build",
+    "release": "standard-version",
+    "postrelease": "git push --follow-tags origin master && npm publish"
   },
   "repository": {
     "type": "git",
@@ -28,13 +41,44 @@
   "devDependencies": {
     "@types/node": "^10.12.12",
     "rimraf": "^2.6.2",
-    "tslint": "^5.9.1",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.2",
+    "husky": "1.2.0",
+    "lint-staged": "8.1.0",
+    "prettier": "1.15.3",
+    "standard-version": "4.4.0",
+    "tslint": "5.11.0",
+    "tslint-config-prettier": "1.17.0"
   },
-  "dependencies": {},
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
     }
-  }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true
+  },
+  "renovate": {
+    "extends": [
+      "config:base"
+    ],
+    "semanticPrefix": "chore:",
+    "devDependencies": {
+      "automerge": true
+    },
+    "packageRules": [
+      {
+        "packagePatterns": [
+          "@types/"
+        ],
+        "automerge": true
+      }
+    ]
+  },
+  "dependencies": {}
 }

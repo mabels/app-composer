@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import * as execa from 'execa';
-import * as mkdirp from './folder-creator';
+import { mkdirp } from './folder-creator';
 import { PackageJson } from './package-json';
 import { invokePackage } from './invoke-package';
 import { transformToCompose } from './transform-to-compose';
@@ -13,12 +13,16 @@ export interface CreatePkgOptions {
   localDependencies: { [id: string]: string };
 }
 
-function addProjectPackages(pkgDeps: ObjMap, targetFolder: string, options: CreatePkgOptions): void {
+function addProjectPackages(
+  pkgDeps: ObjMap,
+  targetFolder: string,
+  options: CreatePkgOptions
+): void {
   if (!options.localDependencies) {
     return;
   }
 
-  Object.keys(options.localDependencies).forEach((dependencyName) => {
+  Object.keys(options.localDependencies).forEach(dependencyName => {
     if (pkgDeps && pkgDeps[dependencyName]) {
       const pathToProject = options.localDependencies[dependencyName];
       const packageJson = PackageJson.read(pathToProject);
@@ -29,7 +33,12 @@ function addProjectPackages(pkgDeps: ObjMap, targetFolder: string, options: Crea
   });
 }
 
-export function pack(pkgName: string, srcFolder: string, trgFolder: string, options: CreatePkgOptions): boolean {
+export function pack(
+  pkgName: string,
+  srcFolder: string,
+  trgFolder: string,
+  options: CreatePkgOptions
+): boolean {
   const composeDir = path.join(trgFolder, 'compose');
   const tmpDir = path.join(trgFolder, '.tmp', uuid.v4());
   const pkgFileName = path.join(composeDir, `${pkgName}`);
@@ -44,12 +53,17 @@ export function pack(pkgName: string, srcFolder: string, trgFolder: string, opti
   mkdirp.sync(path.dirname(pkgFileName));
   mkdirp.sync(path.dirname(tmpFileName));
 
-  execa.sync('yarn', ['pack', '-f', `${tmpFileName}.npm.tgz`, '--silent'], { cwd: srcFolder });
+  execa.sync('yarn', ['pack', '-f', `${tmpFileName}.npm.tgz`, '--silent'], {
+    cwd: srcFolder
+  });
   fs.renameSync(`${tmpFileName}.npm.tgz`, `${pkgFileName}.npm.tgz`);
   return true;
 }
 
-export function createPkg(basePath: string = './', options?: CreatePkgOptions): void {
+export function createPkg(
+  basePath: string = './',
+  options?: CreatePkgOptions
+): void {
   const packageJson = PackageJson.read(basePath);
   if (!PackageJson.isComposable(packageJson)) {
     return;
@@ -73,6 +87,9 @@ export function createPkg(basePath: string = './', options?: CreatePkgOptions): 
 
     const js = invokePackage(basePath, path.basename(pkgFname), entryPoints);
     PackageJson.writeDummy('app-composer', composePath, []);
-    fs.writeFileSync(`${pkgFname}.Invocation.json`, JSON.stringify(js.invocation, null, 2));
+    fs.writeFileSync(
+      `${pkgFname}.Invocation.json`,
+      JSON.stringify(js.invocation, null, 2)
+    );
   });
 }
