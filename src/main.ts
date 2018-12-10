@@ -1,9 +1,9 @@
-
 import {
   PackageJson,
   startApp,
   createPkg,
-  startWatchComposer
+  startWatchComposer,
+  startRunExtract
 } from '../src/index';
 import * as yargs from 'yargs';
 
@@ -13,6 +13,11 @@ yargs.usage('Usage: $0 <command> [options]')
     const cwd = PackageJson.findPathTo(process.cwd());
     console.log(`start the watching Compose Server in [${cwd}]`);
     startWatchComposer(cwd);  // refactoring
+  })
+  .command('run-extract', 'run extract command', {}, (argv) => {
+    const cwd = PackageJson.findPathTo(process.cwd());
+    console.log(`run extract command`);
+    startRunExtract(argv); // refactoring
   })
   .command('server', 'start the Compose Server', {}, (argv) => {
     const cwd = PackageJson.findPathTo(process.cwd());

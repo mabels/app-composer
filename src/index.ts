@@ -19,6 +19,7 @@ export { invokePackage } from './functions/invoke-package';
 export { startApp } from './functions/start-app';
 export { createPkg, CreatePkgOptions, pack } from './functions/create-pkg';
 export { startWatchComposer } from './functions/start-watch-composer';
+export { startRunExtract } from './functions/start-run-extract';
 export { transformToCompose } from './functions/transform-to-compose';
 export { writeComposedJs } from './functions/write-composed-js';
 export { createBuildPack } from './functions/packer';
