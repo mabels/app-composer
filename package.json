@@ -5,10 +5,9 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "install": "lerna run install --stream --include-filtered-dependencies",
+    "install": "lerna bootstrap && lerna run install --stream --include-filtered-dependencies",
     "build": "lerna run build --stream --include-filtered-dependencies",
-    "test": "lerna run test --stream --include-filtered-dependencies" 
+    "test": "lerna run test --stream --include-filtered-dependencies"
   },
   "devDependencies": {
     "lerna": "^3.6.0"
