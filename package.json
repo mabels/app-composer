@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "install": "lerna bootstrap && lerna run install --stream --include-filtered-dependencies",
+    "install": "lerna bootstrap && lerna run install",
     "build": "lerna run build --stream --include-filtered-dependencies",
     "test": "lerna run test --stream --include-filtered-dependencies"
   },
