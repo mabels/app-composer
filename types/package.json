@@ -1,6 +1,6 @@
 {
   "name": "@app-composer/types",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "app composer interface component",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -25,9 +25,9 @@
     "test": "echo no tests to day",
     "test:integration": "jest -c jest.integration.js",
     "lint": "tslint --project .",
-    "prerelease": "git checkout master && git pull --ff-only origin master && yarn && yarn clean && yarn lint && yarn test && yarn build",
+    "prerelease": "git checkout 2.x && git pull --ff-only origin 2.x && yarn && yarn clean && yarn lint && yarn test && yarn build",
     "release": "standard-version",
-    "postrelease": "git push --follow-tags origin master && npm publish"
+    "postrelease": "git push --follow-tags origin 2.x && npm publish"
   },
   "repository": {
     "type": "git",
