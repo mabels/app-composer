@@ -9,6 +9,7 @@ jobs:
     branches:
       only:
         - 1.5.x
+        - 2.x
 
     docker:
       # specify the version you desire here
