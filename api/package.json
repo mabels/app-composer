@@ -1,6 +1,6 @@
 {
   "name": "@app-composer/api",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "app composer interface component",
   "main": "lib/index.js",
   "module": "esm/index.js",
