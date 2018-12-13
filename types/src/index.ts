@@ -8,6 +8,7 @@ export { ServerConfig, UserPassword } from './types/server-config';
 export { Suffixes } from './types/suffixes';
 export { WatcherState } from './types/watcher-state';
 export { AppComposerConfig } from './types/app-composer-config';
+export { AppComposer } from './types/app-composer';
 export { Io } from './types/io';
 export { FileString } from './types/file-string';
 export { TypedFileData } from './types/typed-file-data';

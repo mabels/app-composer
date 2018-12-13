@@ -1,7 +1,11 @@
-async function readPackageJson(fname: string): Promise<PackageJsonFile> {
+import { PackageJsonFile, PackageJsonSchema } from '@app-composer/types';
+
+import { readFileString } from './promise-fs-util';
+
+export async function readPackageJson(fname: string): Promise<PackageJsonFile> {
   const fileString = await readFileString(fname);
   return {
     fname,
-    data: JSON.parse(fileString.content) as PackageJson
+    data: JSON.parse(fileString.content) as PackageJsonSchema
   };
 }

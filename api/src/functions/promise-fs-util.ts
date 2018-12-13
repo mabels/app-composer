@@ -1,8 +1,11 @@
-function promiseCb<T>(
+import * as fs from 'fs';
+import { FileString } from '@app-composer/types';
+
+export function promiseCb<T>(
   rs: (val: T) => void,
   rj: (e?: any) => void,
-  val: any = () => {}
-) {
+  val: any = () => ({})
+): (err: any, data?: any) => void {
   return (err: any, data?: any) => {
     if (err) {
       // tslint:disable-next-line:no-console
@@ -14,13 +17,13 @@ function promiseCb<T>(
   };
 }
 
-function copyFile(src: string, dst: string): Promise<void> {
+export function copyFile(src: string, dst: string): Promise<void> {
   return new Promise((rs, rj) => {
     fs.copyFile(src, dst, promiseCb(rs, rj));
   });
 }
 
-function readFileString(fname: string): Promise<FileString> {
+export function readFileString(fname: string): Promise<FileString> {
   return new Promise<FileString>((rs, rj) => {
     fs.readFile(
       fname,

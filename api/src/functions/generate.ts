@@ -1,9 +1,19 @@
 import * as path from 'path';
+import * as fs from 'fs';
+
 import * as rimraf from 'rimraf';
 import * as mkdirp from 'mkdirp';
+import * as execa from 'execa';
+import * as semver from 'semver';
 
-import { Io, VersionMap } from '@app-composer/types';
+import {
+  Io,
+  VersionMap,
+  PackageJsonSchema,
+  PackageJsonFile
+} from '@app-composer/types';
 import { GetPackageJsons } from './get-package-jsons';
+import { promiseCb, copyFile } from './promise-fs-util';
 
 export interface GenerateConfig extends GetPackageJsons.Type {
   readonly io: Io;
@@ -17,9 +27,9 @@ function toGeneratePackageJson(config: GenerateConfig): string {
   return path.join(config.outputDirectory, 'package.json');
 }
 
-async function buildDependencyProject(
+export async function buildDependencyProject(
   config: GenerateConfig,
-  pjson: PackageJson
+  pjson: PackageJsonSchema
 ): Promise<void> {
   const outputDirectory = config.outputDirectory;
   await new Promise((rs, rj) => {
@@ -63,24 +73,11 @@ async function buildDependencyProject(
   });
 }
 
-async function collectAllPackageJson(
-  config: GetPackageJsons.Type
-): Promise<PackageJsonFile[]> {
-  const cmd = `cd ${config.projectRoot} && ${config.cmdGetPackageJsons}`;
-  const ret = await execa.shell(cmd);
-  return await Promise.all(
-    ret.stdout
-      .split(/[\n\r]+/)
-      .filter(pfile => pfile.startsWith('/'))
-      .map(pfile => readPackageJson(pfile))
-  );
-}
-
-function filterOwnDependencies(
+export function filterOwnDependencies(
   config: GenerateConfig,
   pjsons: PackageJsonFile[],
-  p: PackageJson
-): PackageJson {
+  p: PackageJsonSchema
+): PackageJsonSchema {
   const ourPackageNames = new Set<string>(pjsons.map(pjson => pjson.data.name));
   ourPackageNames.forEach(pname => {
     delete p.dependencies[pname];
@@ -97,11 +94,11 @@ function sortByKeys(vm: VersionMap): VersionMap {
   return ret;
 }
 
-function mergeDependencies(
+export function mergeDependencies(
   config: GenerateConfig,
   pjson: PackageJsonFile[],
-  basePjson: PackageJson
-): PackageJson {
+  basePjson: PackageJsonSchema
+): PackageJsonSchema {
   const toSort = pjson.reduce(
     (prev, c) => {
       mergeVersion(c.fname, prev.dependencies, c.data.dependencies || {});
