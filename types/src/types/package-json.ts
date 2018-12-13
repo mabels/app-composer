@@ -1,8 +1,11 @@
+import { TypedFileData } from './typed-file-data';
 
 export interface PackageJsonAppComposer {
   'entry-point-file': string;
   compose: string;
 }
+
+export type VersionMap = { [id: string]: string };
 
 export interface PackageJsonSchema {
   name: string;
@@ -13,7 +16,9 @@ export interface PackageJsonSchema {
   scripts: {
     [id: string]: string
   };
-  dependencies?: { [id: string]: string };
-  devDependencies?: { [id: string]: string };
+  dependencies?: VersionMap;
+  devDependencies?: VersionMap;
   'app-composer'?: { [id: string]: PackageJsonAppComposer };
 }
+
+export type PackageJsonFile = TypedFileData<PackageJsonSchema>;
