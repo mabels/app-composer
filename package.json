@@ -5,10 +5,11 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "install": "lerna bootstrap && lerna run install",
-    "build": "lerna run build --stream --include-filtered-dependencies",
+    "clean": "npx lerna run clean",
+    "install": "npx lerna bootstrap && npx lerna run install",
+    "build": "npx lerna run build --stream --include-filtered-dependencies",
     "pretest": "npm run build",
-    "test": "lerna run test --stream --include-filtered-dependencies"
+    "test": "npx lerna run test --stream --include-filtered-dependencies"
   },
   "devDependencies": {
     "lerna": "^3.6.0"
