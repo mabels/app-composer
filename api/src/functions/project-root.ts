@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 import * as yargs from 'yargs';
 
 export abstract class ProjectRoot {
@@ -6,13 +8,13 @@ export abstract class ProjectRoot {
   public static applyArgs(y: yargs.Argv): yargs.Argv {
     return y.option('projectRoot', {
       alias: 'R',
-      require: true
+      default: process.cwd()
     });
   }
 
   public static fromArgs(args: yargs.Arguments): ProjectRoot {
     return {
-      projectRoot: args.projectRoot
+      projectRoot: path.resolve(args.projectRoot)
     };
   }
 }

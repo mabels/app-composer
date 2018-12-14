@@ -13,4 +13,8 @@ export class StdIo implements Io {
     // tslint:disable-next-line:no-console
     console.error(s);
   }
+  public cmd(s: string): void {
+    // tslint:disable-next-line:no-console
+    console.log(`$ ${s}`);
+  }
 }

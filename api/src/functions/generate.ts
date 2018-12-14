@@ -14,13 +14,13 @@ import {
 } from '@app-composer/types';
 import { GetPackageJsons } from './get-package-jsons';
 import { promiseCb, copyFile } from './promise-fs-util';
+import { PackageLock } from './package-lock';
 
-export interface GenerateConfig extends GetPackageJsons.Type {
+export interface GenerateConfig extends GetPackageJsons.Type, PackageLock {
   readonly io: Io;
   readonly outputDirectory: string;
   readonly yarnOfflineMirror?: string;
   readonly cmdInstallPackages: string;
-  readonly lockFile: string;
 }
 
 function toGeneratePackageJson(config: GenerateConfig): string {
@@ -32,16 +32,20 @@ export async function buildDependencyProject(
   pjson: PackageJsonSchema
 ): Promise<void> {
   const outputDirectory = config.outputDirectory;
+  console.log('A');
   await new Promise((rs, rj) => {
     rimraf(outputDirectory, promiseCb(rs, rj));
   });
+  console.log('B');
   await new Promise((rs, rj) => {
     mkdirp(outputDirectory, promiseCb(rs, rj));
   });
+  console.log('C', config.packageLock);
   await copyFile(
-    path.join(config.projectRoot, config.lockFile),
-    path.join(config.outputDirectory, config.lockFile)
+    path.join(config.projectRoot, config.packageLock),
+    path.join(config.outputDirectory, config.packageLock)
   );
+  console.log('D');
   await new Promise((rs, rj) => {
     fs.writeFile(
       toGeneratePackageJson(config),
@@ -49,6 +53,7 @@ export async function buildDependencyProject(
       promiseCb(rs, rj)
     );
   });
+  console.log('E', config.packageLock);
   if (config.yarnOfflineMirror) {
     await new Promise((rs, rj) => {
       fs.writeFile(
@@ -58,9 +63,10 @@ export async function buildDependencyProject(
       );
     });
   }
-  const p = execa.shell(
-    `cd ${outputDirectory} && ${config.cmdInstallPackages}`
-  );
+  console.log('F', config.packageLock);
+  const p = execa.shell(`${config.cmdInstallPackages}`, {
+    cwd: outputDirectory
+  });
   p.stdout.pipe(process.stdout);
   p.stderr.pipe(process.stderr);
   return new Promise<void>((rs, rj) => {
